@@ -1,0 +1,1134 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f172a">
+    <title>CHAMPMANAGER | Centro de administración</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        :root {
+            --navy: #0f172a;
+            --red: #dc2626;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        a, button, input {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button, input {
+            font: inherit;
+        }
+
+        .sidebar {
+            background: var(--navy);
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 11px;
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: background .2s, color .2s, transform .2s;
+        }
+
+        .sidebar-link:hover {
+            background: #1e293b;
+            color: white;
+        }
+
+        .sidebar-active,
+        .sidebar-active:hover {
+            background: var(--red);
+            color: white;
+            font-weight: 800;
+        }
+
+        .logout-link {
+            border: 1px solid rgba(248, 113, 113, .25);
+            background: rgba(220, 38, 38, .08);
+            color: #fca5a5;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .logout-link:hover {
+            background: #dc2626;
+            border-color: #dc2626;
+            color: white;
+        }
+
+        .panel {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, .025);
+        }
+
+        .stat-card,
+        .action-card {
+            transition: transform .2s, box-shadow .2s, border-color .2s;
+        }
+
+        .stat-card:hover,
+        .action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, .07);
+        }
+
+        .action-card:hover {
+            border-color: #fecaca;
+        }
+
+        .icon-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            flex-shrink: 0;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: -.025em;
+            color: #0f172a;
+        }
+
+        .table-row:hover {
+            background: #f8fafc;
+        }
+
+        .field {
+            width: 100%;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 11px 13px;
+            outline: none;
+            background: white;
+            color: #0f172a;
+        }
+
+        .field:focus {
+            border-color: var(--red);
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, .1);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            background: #22c55e;
+        }
+
+        .empty-state {
+            padding: 32px 20px;
+            text-align: center;
+        }
+
+        @media (max-width: 1023px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition-duration: .01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+
+<div class="min-h-screen lg:flex">
+
+    <!-- BARRA LATERAL -->
+    <aside class="sidebar flex w-full flex-col text-white lg:sticky lg:top-0 lg:h-screen lg:w-72 lg:shrink-0">
+
+        <!-- IDENTIDAD -->
+        <div class="border-b border-slate-800 px-6 py-6">
+            <a href="{% url 'admin_panel' %}" class="inline-block">
+                <h1 class="text-2xl font-black tracking-tight">
+                    CHAMP<span class="text-red-500">MANAGER</span>
+                </h1>
+            </a>
+
+            <p class="mt-2 text-xs uppercase tracking-[0.2em] text-slate-400">
+                Centro de administración
+            </p>
+
+            <div class="mt-5 flex items-center gap-3 rounded-xl bg-slate-900 p-3">
+                <div class="icon-box bg-red-600 text-xl">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div class="min-w-0">
+                    <p class="font-bold">Panel de control</p>
+                    <p class="text-xs text-slate-400">Gestión deportiva</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- NAVEGACIÓN -->
+        <nav class="flex-1 space-y-1 p-4">
+
+            <p class="px-3 pb-2 pt-1 text-xs font-bold uppercase tracking-widest text-slate-500">
+                Principal
+            </p>
+
+            <a href="{% url 'admin_panel' %}" class="sidebar-link sidebar-active" aria-current="page">
+                <i class="fa-solid fa-chart-pie w-5 text-center"></i>
+                Dashboard
+            </a>
+
+            <a href="{% url 'campeonatos' %}" class="sidebar-link">
+                <i class="fa-solid fa-trophy w-5 text-center"></i>
+                Campeonatos
+            </a>
+
+            <a href="{% url 'equipos' %}" class="sidebar-link">
+                <i class="fa-solid fa-shield-halved w-5 text-center"></i>
+                Equipos
+            </a>
+
+            <a href="{% url 'jugadores' %}" class="sidebar-link">
+                <i class="fa-solid fa-users w-5 text-center"></i>
+                Jugadores
+            </a>
+
+            <a href="{% url 'partidos' %}" class="sidebar-link">
+                <i class="fa-solid fa-futbol w-5 text-center"></i>
+                Partidos y resultados
+            </a>
+
+            <a href="{% url 'estadisticas' %}" class="sidebar-link">
+                <i class="fa-solid fa-chart-column w-5 text-center"></i>
+                Estadísticas
+            </a>
+
+            <a href="{% url 'sanciones' %}" class="sidebar-link">
+                <i class="fa-solid fa-rectangle-list w-5 text-center"></i>
+                Disciplina y sanciones
+            </a>
+
+            <div class="my-5 border-t border-slate-800"></div>
+
+            <p class="px-3 pb-2 text-xs font-bold uppercase tracking-widest text-slate-500">
+                Herramientas
+            </p>
+
+            <a href="{% url 'crear_campeonato' %}" class="sidebar-link">
+                <i class="fa-solid fa-circle-plus w-5 text-center"></i>
+                Nuevo campeonato
+            </a>
+
+            <a href="{% url 'crear_equipo' %}" class="sidebar-link">
+                <i class="fa-solid fa-user-plus w-5 text-center"></i>
+                Registrar equipo
+            </a>
+
+            <a href="{% url 'crear_partido' %}" class="sidebar-link">
+                <i class="fa-solid fa-calendar-plus w-5 text-center"></i>
+                Programar partido
+            </a>
+
+            <div class="my-5 border-t border-slate-800"></div>
+
+            <!-- CERRAR SESIÓN -->
+            <form method="post" action="{% url 'logout' %}" class="mt-2">
+                {% csrf_token %}
+                <button
+                    type="submit"
+                    class="sidebar-link logout-link"
+                >
+                    <i class="fa-solid fa-right-from-bracket w-5 text-center"></i>
+                    Cerrar sesión
+                </button>
+            </form>
+
+        </nav>
+
+        <!-- INFORMACIÓN DEL SISTEMA -->
+        <div class="border-t border-slate-800 p-5">
+            <div class="rounded-xl border border-slate-800 bg-slate-900 p-4">
+                <div class="flex items-center gap-2">
+                    <span class="status-dot"></span>
+                    <p class="text-sm font-semibold">CHAMPMANAGER</p>
+                </div>
+                <p class="mt-2 text-xs leading-5 text-slate-400">
+                    Gestión centralizada de competiciones, equipos, jugadores y resultados.
+                </p>
+            </div>
+        </div>
+
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="min-w-0 flex-1">
+
+        <!-- ENCABEZADO -->
+        <header class="border-b border-slate-200 bg-white px-5 py-5 sm:px-8">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div class="min-w-0">
+                    <p class="text-sm font-semibold text-red-600">
+                        CHAMPMANAGER / Administración
+                    </p>
+
+                    <h2 class="mt-1 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">
+                        Centro de control
+                    </h2>
+
+                    <p class="mt-2 text-sm text-slate-500">
+                        Supervisa y administra la información deportiva desde un solo lugar.
+                    </p>
+
+                    <p class="mt-2 text-xs capitalize text-slate-400">
+                        <i class="fa-regular fa-calendar mr-1"></i>
+                        <span id="fechaActual">Panel administrativo</span>
+                    </p>
+                </div>
+
+                <!-- ACCIONES DEL ENCABEZADO -->
+                <div class="flex flex-wrap gap-2">
+                    <a href="{% url 'campeonatos' %}"
+                       class="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-50">
+                        <i class="fa-solid fa-list"></i>
+                        Campeonatos
+                    </a>
+
+                    <a href="{% url 'crear_campeonato' %}"
+                       class="inline-flex items-center gap-2 rounded-xl bg-red-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-red-700">
+                        <i class="fa-solid fa-plus"></i>
+                        Nuevo campeonato
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <div class="space-y-8 p-5 sm:p-8">
+
+            <!-- ALERTAS ADMINISTRATIVAS -->
+            {% if alertas %}
+            <section aria-labelledby="titulo-alertas">
+                <div class="mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-bell text-red-600"></i>
+                    <h3 id="titulo-alertas" class="section-title">Alertas administrativas</h3>
+                    <span class="rounded-full bg-red-100 px-2.5 py-1 text-xs font-bold text-red-700">
+                        {{ total_alertas|default_if_none:0 }}
+                    </span>
+                </div>
+
+                <div class="space-y-3">
+                    {% for alerta in alertas %}
+                    <div class="flex flex-col gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div class="flex items-start gap-3">
+                            <i class="fa-solid fa-circle-exclamation mt-1 text-amber-600"></i>
+                            <div>
+                                <h4 class="font-bold text-slate-900">{{ alerta.titulo }}</h4>
+                                <p class="mt-1 text-sm text-slate-600">{{ alerta.mensaje }}</p>
+                            </div>
+                        </div>
+
+                        <a href="{% url alerta.url %}"
+                           class="inline-flex shrink-0 items-center justify-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-bold text-white hover:bg-slate-700">
+                            {{ alerta.accion }}
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
+
+            <!-- RESUMEN GENERAL -->
+            <section aria-labelledby="titulo-resumen">
+                <div class="mb-4">
+                    <h3 id="titulo-resumen" class="section-title">Resumen general</h3>
+                    <p class="mt-1 text-sm text-slate-500">
+                        Totales actuales registrados en la plataforma.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-4">
+
+                    <!-- CAMPEONATOS -->
+                    <article class="panel stat-card p-5">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <p class="text-sm font-medium text-slate-500">Campeonatos</p>
+                                <p class="mt-3 text-4xl font-black text-slate-900">
+                                    {{ total_campeonatos|default_if_none:0 }}
+                                </p>
+                                <p class="mt-2 text-xs text-slate-500">Competencias registradas</p>
+                            </div>
+                            <div class="icon-box bg-red-50 text-xl text-red-600">
+                                <i class="fa-solid fa-trophy"></i>
+                            </div>
+                        </div>
+                        <div class="mt-5 border-t border-slate-100 pt-4">
+                            <a href="{% url 'campeonatos' %}" class="text-sm font-bold text-red-600 hover:text-red-800">
+                                Gestionar campeonatos →
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- EQUIPOS -->
+                    <article class="panel stat-card p-5">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <p class="text-sm font-medium text-slate-500">Equipos</p>
+                                <p class="mt-3 text-4xl font-black text-slate-900">
+                                    {{ total_equipos|default_if_none:0 }}
+                                </p>
+                                <p class="mt-2 text-xs text-slate-500">Equipos registrados</p>
+                            </div>
+                            <div class="icon-box bg-blue-50 text-xl text-blue-600">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                        </div>
+                        <div class="mt-5 border-t border-slate-100 pt-4">
+                            <a href="{% url 'equipos' %}" class="text-sm font-bold text-red-600 hover:text-red-800">
+                                Gestionar equipos →
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- JUGADORES -->
+                    <article class="panel stat-card p-5">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <p class="text-sm font-medium text-slate-500">Jugadores</p>
+                                <p class="mt-3 text-4xl font-black text-slate-900">
+                                    {{ total_jugadores|default_if_none:0 }}
+                                </p>
+                                <p class="mt-2 text-xs text-slate-500">Jugadores registrados</p>
+                            </div>
+                            <div class="icon-box bg-green-50 text-xl text-green-600">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                        </div>
+                        <div class="mt-5 border-t border-slate-100 pt-4">
+                            <a href="{% url 'jugadores' %}" class="text-sm font-bold text-red-600 hover:text-red-800">
+                                Gestionar jugadores →
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- PARTIDOS -->
+                    <article class="panel stat-card p-5">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <p class="text-sm font-medium text-slate-500">Partidos</p>
+                                <p class="mt-3 text-4xl font-black text-slate-900">
+                                    {{ total_partidos|default_if_none:0 }}
+                                </p>
+                                <p class="mt-2 text-xs text-slate-500">Encuentros registrados</p>
+                            </div>
+                            <div class="icon-box bg-violet-50 text-xl text-violet-600">
+                                <i class="fa-solid fa-futbol"></i>
+                            </div>
+                        </div>
+                        <div class="mt-5 border-t border-slate-100 pt-4">
+                            <a href="{% url 'partidos' %}" class="text-sm font-bold text-red-600 hover:text-red-800">
+                                Gestionar partidos →
+                            </a>
+                        </div>
+                    </article>
+
+                </div>
+            </section>
+
+            <!-- RENDIMIENTO DEPORTIVO Y ACCIONES -->
+            <section class="grid grid-cols-1 gap-6 xl:grid-cols-3">
+
+                <div class="panel p-5 sm:p-6 xl:col-span-2">
+                    <h3 class="section-title">Rendimiento deportivo</h3>
+                    <p class="mt-1 text-sm text-slate-500">
+                        Totales acumulados de las estadísticas registradas.
+                    </p>
+
+                    <div class="mt-5 grid grid-cols-2 gap-4 lg:grid-cols-4">
+                        <div class="rounded-xl border border-slate-100 bg-slate-50 p-4">
+                            <p class="text-sm text-slate-500">
+                                <i class="fa-solid fa-futbol mr-1 text-green-600"></i> Goles
+                            </p>
+                            <p class="mt-3 text-3xl font-black text-green-600">
+                                {{ total_goles|default_if_none:0 }}
+                            </p>
+                        </div>
+
+                        <div class="rounded-xl border border-slate-100 bg-slate-50 p-4">
+                            <p class="text-sm text-slate-500">
+                                <i class="fa-solid fa-bullseye mr-1 text-blue-600"></i> Asistencias
+                            </p>
+                            <p class="mt-3 text-3xl font-black text-blue-600">
+                                {{ total_asistencias|default_if_none:0 }}
+                            </p>
+                        </div>
+
+                        <div class="rounded-xl border border-slate-100 bg-slate-50 p-4">
+                            <p class="text-sm text-slate-500">
+                                <i class="fa-solid fa-square mr-1 text-amber-500"></i> Amarillas
+                            </p>
+                            <p class="mt-3 text-3xl font-black text-amber-500">
+                                {{ total_amarillas|default_if_none:0 }}
+                            </p>
+                        </div>
+
+                        <div class="rounded-xl border border-slate-100 bg-slate-50 p-4">
+                            <p class="text-sm text-slate-500">
+                                <i class="fa-solid fa-square mr-1 text-red-600"></i> Rojas
+                            </p>
+                            <p class="mt-3 text-3xl font-black text-red-600">
+                                {{ total_rojas|default_if_none:0 }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 flex flex-wrap gap-3">
+                        <a href="{% url 'estadisticas' %}"
+                           class="rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-slate-700">
+                            <i class="fa-solid fa-chart-line mr-1"></i>
+                            Ver estadísticas
+                        </a>
+
+                        <a href="{% url 'sanciones' %}"
+                           class="rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50">
+                            <i class="fa-solid fa-clipboard-list mr-1"></i>
+                            Revisar disciplina
+                        </a>
+                    </div>
+                </div>
+
+                <!-- CENTRO DE ACCIONES -->
+                <div class="panel p-5 sm:p-6">
+                    <h3 class="section-title">Centro de acciones</h3>
+                    <p class="mt-1 text-sm text-slate-500">Accesos a tareas frecuentes.</p>
+
+                    <div class="mt-5 space-y-3">
+
+                        <a href="{% url 'crear_campeonato' %}" class="action-card flex items-center gap-3 rounded-xl border border-slate-200 p-3">
+                            <div class="icon-box h-10 w-10 bg-red-50 text-red-600">
+                                <i class="fa-solid fa-plus"></i>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <p class="text-sm font-bold">Crear campeonato</p>
+                                <p class="mt-1 text-xs text-slate-500">Registrar una competición</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                        </a>
+
+                        <a href="{% url 'crear_equipo' %}" class="action-card flex items-center gap-3 rounded-xl border border-slate-200 p-3">
+                            <div class="icon-box h-10 w-10 bg-blue-50 text-blue-600">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <p class="text-sm font-bold">Registrar equipo</p>
+                                <p class="mt-1 text-xs text-slate-500">Añadir un equipo</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                        </a>
+
+                        <a href="{% url 'jugadores' %}" class="action-card flex items-center gap-3 rounded-xl border border-slate-200 p-3">
+                            <div class="icon-box h-10 w-10 bg-green-50 text-green-600">
+                                <i class="fa-solid fa-user-group"></i>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <p class="text-sm font-bold">Administrar jugadores</p>
+                                <p class="mt-1 text-xs text-slate-500">Consultar y revisar fichas</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                        </a>
+
+                        <a href="{% url 'crear_partido' %}" class="action-card flex items-center gap-3 rounded-xl border border-slate-200 p-3">
+                            <div class="icon-box h-10 w-10 bg-violet-50 text-violet-600">
+                                <i class="fa-solid fa-calendar-plus"></i>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <p class="text-sm font-bold">Programar partido</p>
+                                <p class="mt-1 text-xs text-slate-500">Registrar un encuentro</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                        </a>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- PRÓXIMOS PARTIDOS -->
+            <section class="panel overflow-hidden">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 p-5">
+                    <div>
+                        <h3 class="section-title">Próximos partidos</h3>
+                        <p class="mt-1 text-sm text-slate-500">Encuentros desde hoy en adelante.</p>
+                    </div>
+                    <a href="{% url 'partidos' %}" class="text-sm font-bold text-red-600 hover:text-red-800">
+                        Ver calendario →
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-1 gap-3 p-5 md:grid-cols-2 xl:grid-cols-3">
+                    {% for partido in proximos_partidos %}
+                    <article class="rounded-xl border border-slate-200 p-4 transition hover:border-red-200 hover:shadow-sm">
+                        <div class="flex items-center justify-between gap-3">
+                            <span class="rounded-lg bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700">
+                                {{ partido.fecha|date:"d/m/Y"|default:"Fecha pendiente" }}
+                            </span>
+                            <span class="text-xs text-slate-500">
+                                {{ partido.hora|default:"Hora pendiente" }}
+                            </span>
+                        </div>
+
+                        <div class="my-4 flex items-center justify-between gap-3">
+                            <p class="min-w-0 flex-1 break-words font-bold text-slate-800">
+                                {{ partido.equipo_local.nombre }}
+                            </p>
+                            <span class="text-xs font-black text-slate-400">VS</span>
+                            <p class="min-w-0 flex-1 break-words text-right font-bold text-slate-800">
+                                {{ partido.equipo_visitante.nombre }}
+                            </p>
+                        </div>
+
+                        <p class="border-t border-slate-100 pt-3 text-xs text-slate-500">
+                            <i class="fa-solid fa-trophy mr-1"></i>
+                            {{ partido.id_campeonato.nombre|default:"Sin campeonato" }}
+                        </p>
+                    </article>
+                    {% empty %}
+                    <div class="empty-state md:col-span-2 xl:col-span-3">
+                        <i class="fa-regular fa-calendar-xmark text-3xl text-slate-300"></i>
+                        <p class="mt-3 font-bold text-slate-700">No hay próximos partidos</p>
+                        <p class="mt-1 text-sm text-slate-500">Los partidos futuros aparecerán aquí.</p>
+                        <a href="{% url 'crear_partido' %}" class="mt-4 inline-block font-bold text-red-600 hover:text-red-800">
+                            Programar partido →
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <!-- CAMPEONATOS Y EQUIPOS DESTACADOS -->
+            <section class="grid grid-cols-1 gap-6 xl:grid-cols-2">
+
+                <!-- CAMPEONATOS RECIENTES -->
+                <div class="panel overflow-hidden">
+                    <div class="border-b border-slate-200 p-5">
+                        <h3 class="section-title">Campeonatos recientes</h3>
+                        <p class="mt-1 text-sm text-slate-500">Últimas competiciones registradas.</p>
+                    </div>
+
+                    <div class="divide-y divide-slate-100">
+                        {% for campeonato in campeonatos_recientes %}
+                        <div class="flex items-center justify-between gap-3 p-4 transition hover:bg-slate-50">
+                            <div class="flex min-w-0 items-center gap-3">
+                                <div class="icon-box h-10 w-10 bg-red-50 text-red-600">
+                                    <i class="fa-solid fa-trophy"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="break-words font-bold text-slate-800">
+                                        {{ campeonato.nombre }}
+                                    </p>
+                                    <p class="mt-1 text-xs text-slate-500">
+                                        Inicio: {{ campeonato.fecha_inicio|date:"d/m/Y"|default:"Sin fecha" }}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <span class="shrink-0 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                                {{ campeonato.estado|default:"Sin estado" }}
+                            </span>
+                        </div>
+                        {% empty %}
+                        <div class="empty-state">
+                            <i class="fa-solid fa-trophy text-3xl text-slate-300"></i>
+                            <p class="mt-3 font-bold text-slate-700">Sin campeonatos registrados</p>
+                            <a href="{% url 'crear_campeonato' %}" class="mt-3 inline-block text-sm font-bold text-red-600">
+                                Crear campeonato →
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="border-t border-slate-100 bg-slate-50 p-4">
+                        <a href="{% url 'campeonatos' %}" class="text-sm font-bold text-red-600 hover:text-red-800">
+                            Ver todos los campeonatos →
+                        </a>
+                    </div>
+                </div>
+
+                <!-- EQUIPOS DESTACADOS -->
+                <div class="panel overflow-hidden">
+                    <div class="border-b border-slate-200 p-5">
+                        <h3 class="section-title">Equipos destacados</h3>
+                        <p class="mt-1 text-sm text-slate-500">Equipos con más jugadores registrados.</p>
+                    </div>
+
+                    <div class="divide-y divide-slate-100">
+                        {% for equipo in equipos_destacados %}
+                        <div class="flex items-center justify-between gap-3 p-4 transition hover:bg-slate-50">
+                            <div class="flex min-w-0 items-center gap-3">
+                                <div class="icon-box h-10 w-10 bg-blue-50 text-blue-600">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="break-words font-bold text-slate-800">{{ equipo.nombre }}</p>
+                                    <p class="mt-1 text-xs text-slate-500">Jugadores inscritos</p>
+                                </div>
+                            </div>
+
+                            <span class="shrink-0 rounded-lg bg-blue-50 px-3 py-2 text-sm font-black text-blue-700">
+                                {{ equipo.total_jugadores|default_if_none:0 }}
+                            </span>
+                        </div>
+                        {% empty %}
+                        <div class="empty-state">
+                            <i class="fa-solid fa-shield-halved text-3xl text-slate-300"></i>
+                            <p class="mt-3 font-bold text-slate-700">Sin equipos registrados</p>
+                            <a href="{% url 'crear_equipo' %}" class="mt-3 inline-block text-sm font-bold text-red-600">
+                                Registrar equipo →
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="border-t border-slate-100 bg-slate-50 p-4">
+                        <a href="{% url 'equipos' %}" class="text-sm font-bold text-red-600 hover:text-red-800">
+                            Ver todos los equipos →
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PARTIDOS RECIENTES Y GOLEADORES -->
+            <section class="grid grid-cols-1 gap-6 2xl:grid-cols-5">
+
+                <!-- TABLA DE PARTIDOS -->
+                <div class="panel overflow-hidden 2xl:col-span-3">
+                    <div class="flex flex-col gap-3 border-b border-slate-200 p-5 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <h3 class="section-title">Partidos recientes</h3>
+                            <p class="mt-1 text-sm text-slate-500">Últimos encuentros registrados.</p>
+                        </div>
+                        <a href="{% url 'partidos' %}" class="text-sm font-bold text-red-600 hover:text-red-800">
+                            Ver todos →
+                        </a>
+                    </div>
+
+                    <div class="border-b border-slate-100 p-4">
+                        <label for="buscarPartido" class="sr-only">Buscar partido</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input
+                                id="buscarPartido"
+                                type="search"
+                                class="field pl-9"
+                                placeholder="Buscar equipo o campeonato..."
+                                autocomplete="off"
+                            >
+                        </div>
+                        <p id="contadorBusqueda" class="mt-2 text-xs text-slate-400" aria-live="polite">
+                            Mostrando partidos recientes
+                        </p>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+                                <tr>
+                                    <th scope="col" class="whitespace-nowrap px-5 py-4 font-semibold">Fecha</th>
+                                    <th scope="col" class="px-5 py-4 font-semibold">Encuentro</th>
+                                    <th scope="col" class="whitespace-nowrap px-5 py-4 text-center font-semibold">Resultado</th>
+                                </tr>
+                            </thead>
+
+                            <tbody class="divide-y divide-slate-100" id="tablaPartidos">
+                                {% for partido in ultimos_partidos %}
+                                <tr class="table-row fila-partido">
+                                    <td class="whitespace-nowrap px-5 py-4 text-slate-600">
+                                        {{ partido.fecha|date:"d/m/Y"|default:"Sin fecha" }}
+                                        <p class="mt-1 text-xs text-slate-400">
+                                            {{ partido.hora|default:"Hora pendiente" }}
+                                        </p>
+                                    </td>
+
+                                    <td class="min-w-48 px-5 py-4">
+                                        <p class="font-bold text-slate-800">{{ partido.equipo_local.nombre }}</p>
+                                        <p class="my-1 text-xs font-semibold text-slate-400">VS</p>
+                                        <p class="font-bold text-slate-800">{{ partido.equipo_visitante.nombre }}</p>
+                                        <p class="mt-2 text-xs text-slate-500">
+                                            {{ partido.id_campeonato.nombre|default:"Sin campeonato" }}
+                                        </p>
+                                    </td>
+
+                                    <td class="whitespace-nowrap px-5 py-4 text-center">
+                                        <span class="inline-flex items-center rounded-lg bg-slate-100 px-3 py-2 font-black text-slate-800">
+                                            {{ partido.resultado_local|default_if_none:"–" }}
+                                            <span class="mx-2 text-slate-400">:</span>
+                                            {{ partido.resultado_visitante|default_if_none:"–" }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr id="sinPartidosIniciales">
+                                    <td colspan="3" class="px-5 py-10 text-center">
+                                        <i class="fa-solid fa-calendar-xmark text-3xl text-slate-300"></i>
+                                        <p class="mt-3 font-bold text-slate-700">No hay partidos registrados</p>
+                                        <a href="{% url 'crear_partido' %}" class="mt-3 inline-block font-bold text-red-600">
+                                            Crear partido →
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+
+                                <tr id="sinPartidosFiltrados" class="hidden">
+                                    <td colspan="3" class="px-5 py-8 text-center text-slate-500">
+                                        No se encontraron coincidencias.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="border-t border-slate-100 bg-slate-50 px-5 py-3 text-xs text-slate-500">
+                        Se muestran hasta 6 partidos recientes.
+                    </div>
+                </div>
+
+                <!-- GOLEADORES -->
+                <div class="panel overflow-hidden 2xl:col-span-2">
+                    <div class="border-b border-slate-200 p-5">
+                        <h3 class="section-title">Máximos goleadores</h3>
+                        <p class="mt-1 text-sm text-slate-500">Ranking según las estadísticas registradas.</p>
+                    </div>
+
+                    <div class="divide-y divide-slate-100">
+                        {% for jugador in goleadores %}
+                        <div class="flex items-center justify-between gap-3 p-4 transition hover:bg-slate-50">
+                            <div class="flex min-w-0 items-center gap-3">
+                                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-black
+                                    {% if forloop.counter == 1 %}bg-amber-100 text-amber-700
+                                    {% elif forloop.counter == 2 %}bg-slate-200 text-slate-700
+                                    {% elif forloop.counter == 3 %}bg-orange-100 text-orange-700
+                                    {% else %}bg-slate-100 text-slate-600{% endif %}">
+                                    {{ forloop.counter }}
+                                </div>
+
+                                <div class="min-w-0">
+                                    <p class="break-words font-bold text-slate-800">
+                                        {{ jugador.id_jugador__nombre }} {{ jugador.id_jugador__apellido }}
+                                    </p>
+                                    <p class="mt-1 text-xs text-slate-500">Ranking de goleadores</p>
+                                </div>
+                            </div>
+
+                            <span class="shrink-0 rounded-lg bg-red-50 px-3 py-2 text-sm font-black text-red-600">
+                                {{ jugador.total_goles|default_if_none:0 }}
+                                <i class="fa-solid fa-futbol"></i>
+                            </span>
+                        </div>
+                        {% empty %}
+                        <div class="empty-state">
+                            <i class="fa-solid fa-bullseye text-3xl text-slate-300"></i>
+                            <p class="mt-3 font-bold text-slate-700">Sin goleadores todavía</p>
+                            <p class="mt-1 text-sm text-slate-500">
+                                Los jugadores aparecerán cuando tengan goles registrados.
+                            </p>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="border-t border-slate-200 bg-slate-50 p-4">
+                        <a href="{% url 'estadisticas' %}" class="text-sm font-bold text-red-600 hover:text-red-800">
+                            Consultar estadísticas →
+                        </a>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- CHECKLIST ADMINISTRATIVA -->
+            <section class="panel p-5 sm:p-6">
+                <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <h3 class="section-title">Lista de revisión administrativa</h3>
+                        <p class="mt-1 text-sm text-slate-500">
+                            Lista de apoyo para revisar el estado de la plataforma.
+                        </p>
+                    </div>
+
+                    <button
+                        type="button"
+                        id="limpiarChecklist"
+                        class="text-sm font-semibold text-slate-500 transition hover:text-red-600"
+                    >
+                        <i class="fa-solid fa-rotate-left mr-1"></i>
+                        Restablecer lista
+                    </button>
+                </div>
+
+                <div class="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2">
+
+                    <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 p-4 transition hover:bg-slate-50">
+                        <input type="checkbox" class="check-admin mt-1 h-4 w-4 accent-red-600">
+                        <span>
+                            <span class="block text-sm font-bold">Revisar campeonatos</span>
+                            <span class="mt-1 block text-xs text-slate-500">Confirmar fechas, nombres y estados.</span>
+                        </span>
+                    </label>
+
+                    <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 p-4 transition hover:bg-slate-50">
+                        <input type="checkbox" class="check-admin mt-1 h-4 w-4 accent-red-600">
+                        <span>
+                            <span class="block text-sm font-bold">Verificar equipos y jugadores</span>
+                            <span class="mt-1 block text-xs text-slate-500">Comprobar asociaciones y fichas.</span>
+                        </span>
+                    </label>
+
+                    <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 p-4 transition hover:bg-slate-50">
+                        <input type="checkbox" class="check-admin mt-1 h-4 w-4 accent-red-600">
+                        <span>
+                            <span class="block text-sm font-bold">Validar resultados</span>
+                            <span class="mt-1 block text-xs text-slate-500">Revisar los marcadores registrados.</span>
+                        </span>
+                    </label>
+
+                    <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 p-4 transition hover:bg-slate-50">
+                        <input type="checkbox" class="check-admin mt-1 h-4 w-4 accent-red-600">
+                        <span>
+                            <span class="block text-sm font-bold">Revisar estadísticas y sanciones</span>
+                            <span class="mt-1 block text-xs text-slate-500">Verificar goles, asistencias y tarjetas.</span>
+                        </span>
+                    </label>
+
+                </div>
+
+                <div class="mt-5">
+                    <div class="mb-2 flex justify-between gap-3 text-xs font-semibold">
+                        <span class="text-slate-500">Progreso de revisión</span>
+                        <span id="progresoTexto" aria-live="polite">0 de 4 completadas</span>
+                    </div>
+
+                    <div
+                        class="h-2 overflow-hidden rounded-full bg-slate-100"
+                        role="progressbar"
+                        aria-label="Progreso de revisión administrativa"
+                        aria-valuemin="0"
+                        aria-valuemax="4"
+                        aria-valuenow="0"
+                        id="progresoContenedor"
+                    >
+                        <div id="progresoBarra" class="h-full rounded-full bg-red-600 transition-all" style="width: 0%"></div>
+                    </div>
+
+                    <p class="mt-2 text-xs text-slate-400">
+                        La checklist funciona en el navegador y no modifica la base de datos.
+                    </p>
+                </div>
+            </section>
+
+            <!-- HERRAMIENTAS ADICIONALES -->
+            <section>
+                <div class="mb-4">
+                    <h3 class="section-title">Herramientas adicionales</h3>
+                    <p class="mt-1 text-sm text-slate-500">
+                        Posibles módulos para ampliar la administración.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+
+                    <article class="panel p-5">
+                        <div class="icon-box bg-indigo-50 text-indigo-600">
+                            <i class="fa-solid fa-user-shield text-lg"></i>
+                        </div>
+                        <h4 class="mt-4 font-bold">Usuarios y permisos</h4>
+                        <p class="mt-2 text-sm leading-5 text-slate-500">
+                            Administrar cuentas, roles y permisos de acceso.
+                        </p>
+                        <span class="mt-4 inline-flex rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">
+                            Requiere implementación
+                        </span>
+                    </article>
+
+                    <article class="panel p-5">
+                        <div class="icon-box bg-cyan-50 text-cyan-600">
+                            <i class="fa-solid fa-database text-lg"></i>
+                        </div>
+                        <h4 class="mt-4 font-bold">Respaldos de datos</h4>
+                        <p class="mt-2 text-sm leading-5 text-slate-500">
+                            Generar y verificar respaldos protegidos de la base de datos.
+                        </p>
+                        <span class="mt-4 inline-flex rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">
+                            Requiere implementación
+                        </span>
+                    </article>
+
+                    <article class="panel p-5">
+                        <div class="icon-box bg-orange-50 text-orange-600">
+                            <i class="fa-solid fa-clipboard-check text-lg"></i>
+                        </div>
+                        <h4 class="mt-4 font-bold">Registro de actividad</h4>
+                        <p class="mt-2 text-sm leading-5 text-slate-500">
+                            Registrar quién crea, modifica o elimina datos y cuándo.
+                        </p>
+                        <span class="mt-4 inline-flex rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">
+                            Requiere implementación
+                        </span>
+                    </article>
+
+                </div>
+            </section>
+
+            <!-- PIE DE PÁGINA -->
+            <footer class="border-t border-slate-200 py-6">
+                <div class="flex flex-col justify-between gap-2 text-sm text-slate-500 sm:flex-row">
+                    <p>
+                        <strong class="text-slate-700">CHAMPMANAGER</strong>
+                        · Plataforma de gestión deportiva.
+                    </p>
+                    <p>Proyecto de título · INACAP Talca</p>
+                </div>
+            </footer>
+
+        </div>
+    </main>
+</div>
+
+<script>
+    // FECHA ACTUAL
+    (() => {
+        const fechaActual = document.getElementById("fechaActual");
+
+        if (fechaActual) {
+            fechaActual.textContent = new Intl.DateTimeFormat("es-CL", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            }).format(new Date());
+        }
+    })();
+
+    // BUSCADOR DE PARTIDOS
+    (() => {
+        const buscador = document.getElementById("buscarPartido");
+        const filas = Array.from(document.querySelectorAll(".fila-partido"));
+        const mensajeSinResultados = document.getElementById("sinPartidosFiltrados");
+        const contador = document.getElementById("contadorBusqueda");
+
+        if (!buscador) return;
+
+        function filtrarPartidos() {
+            const termino = buscador.value.trim().toLocaleLowerCase("es-CL");
+            let visibles = 0;
+
+            filas.forEach((fila) => {
+                const contenido = fila.textContent.toLocaleLowerCase("es-CL");
+                const coincide = contenido.includes(termino);
+
+                fila.style.display = coincide ? "" : "none";
+
+                if (coincide) visibles++;
+            });
+
+            if (mensajeSinResultados) {
+                mensajeSinResultados.classList.toggle(
+                    "hidden",
+                    filas.length === 0 || visibles > 0
+                );
+            }
+
+            if (contador) {
+                if (filas.length === 0) {
+                    contador.textContent = "No hay partidos disponibles para buscar.";
+                } else {
+                    contador.textContent =
+                        `Mostrando ${visibles} de ${filas.length} partidos`;
+                }
+            }
+        }
+
+        buscador.addEventListener("input", filtrarPartidos);
+        filtrarPartidos();
+    })();
+
+    // CHECKLIST ADMINISTRATIVA
+    (() => {
+        const checks = Array.from(document.querySelectorAll(".check-admin"));
+        const textoProgreso = document.getElementById("progresoTexto");
+        const barraProgreso = document.getElementById("progresoBarra");
+        const contenedorProgreso = document.getElementById("progresoContenedor");
+        const botonLimpiar = document.getElementById("limpiarChecklist");
+
+        function actualizarProgreso() {
+            const total = checks.length;
+            const completadas = checks.filter((check) => check.checked).length;
+            const porcentaje = total > 0 ? (completadas / total) * 100 : 0;
+
+            if (textoProgreso) {
+                textoProgreso.textContent = `${completadas} de ${total} completadas`;
+            }
+
+            if (barraProgreso) {
+                barraProgreso.style.width = `${porcentaje}%`;
+            }
+
+            if (contenedorProgreso) {
+                contenedorProgreso.setAttribute("aria-valuenow", String(completadas));
+                contenedorProgreso.setAttribute("aria-valuemax", String(total));
+            }
+        }
+
+        checks.forEach((check) => {
+            check.addEventListener("change", actualizarProgreso);
+        });
+
+        if (botonLimpiar) {
+            botonLimpiar.addEventListener("click", () => {
+                checks.forEach((check) => {
+                    check.checked = false;
+                });
+
+                actualizarProgreso();
+            });
+        }
+
+        actualizarProgreso();
+    })();
+</script>
+
+</body>
+</html>
+```

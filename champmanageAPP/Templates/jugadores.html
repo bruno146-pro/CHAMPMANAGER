@@ -1,0 +1,552 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHAMPMANAGER | Jugadores</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fb;
+        }
+
+        .sidebar {
+            background: #111827;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: 10px;
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: background .2s, color .2s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: #dc2626;
+            color: white;
+        }
+
+        .stat-card {
+            transition: transform .2s, box-shadow .2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(15, 23, 42, .08);
+        }
+
+        .section-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            box-shadow: 0 3px 12px rgba(15, 23, 42, .025);
+        }
+
+        .player-row:hover {
+            background: #f9fafb;
+        }
+
+        .field {
+            width: 100%;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 11px 14px;
+            background: white;
+            color: #0f172a;
+            outline: none;
+        }
+
+        .field:focus {
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, .10);
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            border-radius: 9px;
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: 700;
+            transition: background .2s;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            white-space: nowrap;
+        }
+
+        .btn-edit {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .btn-edit:hover {
+            background: #bfdbfe;
+        }
+
+        .btn-delete {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .btn-delete:hover {
+            background: #fecaca;
+        }
+
+        .btn-primary {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #b91c1c;
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        @media (max-width: 767px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+            }
+        }
+    </style>
+</head>
+
+<body class="text-gray-800">
+
+<div class="min-h-screen md:flex">
+
+    <!-- BARRA LATERAL -->
+    <aside class="sidebar text-white w-full md:w-64 md:min-h-screen md:fixed md:inset-y-0 md:left-0 z-20">
+
+        <div class="px-6 py-6 border-b border-gray-700">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-xl bg-red-600 flex items-center justify-center">
+                    <i class="fa-solid fa-trophy text-xl"></i>
+                </div>
+
+                <div>
+                    <h1 class="text-xl font-extrabold tracking-tight">
+                        CHAMP<span class="text-red-500">MANAGER</span>
+                    </h1>
+                    <p class="text-xs text-gray-400 mt-1">
+                        Ligas Deportivas del Maule
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <nav class="p-4 space-y-2">
+            <p class="text-xs uppercase tracking-widest text-gray-500 px-3 py-2">
+                Principal
+            </p>
+
+            <a href="{% url 'index' %}" class="nav-link">
+                <i class="fa-solid fa-chart-pie w-5"></i>
+                Panel principal
+            </a>
+
+            <a href="{% url 'campeonatos' %}" class="nav-link">
+                <i class="fa-solid fa-trophy w-5"></i>
+                Campeonatos
+            </a>
+
+            <a href="{% url 'equipos' %}" class="nav-link">
+                <i class="fa-solid fa-shield-halved w-5"></i>
+                Equipos
+            </a>
+
+            <a href="{% url 'jugadores' %}" class="nav-link active" aria-current="page">
+                <i class="fa-solid fa-users w-5"></i>
+                Jugadores
+            </a>
+
+            <a href="{% url 'partidos' %}" class="nav-link">
+                <i class="fa-solid fa-futbol w-5"></i>
+                Partidos
+            </a>
+
+            <a href="{% url 'estadisticas' %}" class="nav-link">
+                <i class="fa-solid fa-chart-column w-5"></i>
+                Estadísticas
+            </a>
+
+            <a href="{% url 'sanciones' %}" class="nav-link">
+                <i class="fa-solid fa-rectangle-list w-5"></i>
+                Sanciones
+            </a>
+
+            <div class="pt-5">
+                <p class="text-xs uppercase tracking-widest text-gray-500 px-3 py-2">
+                    Administración
+                </p>
+
+                <a href="/admin/" class="nav-link">
+                    <i class="fa-solid fa-gear w-5"></i>
+                    Administrar sistema
+                </a>
+            </div>
+        </nav>
+
+        <div class="px-5 py-5 mt-2 border-t border-gray-700">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-semibold">Administrador</p>
+                    <p class="text-xs text-gray-400">CHAMPMANAGER</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="flex-1 min-w-0 md:ml-64">
+
+        <!-- CABECERA -->
+        <header class="bg-white border-b border-gray-200 px-5 md:px-8 py-4">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <p class="text-sm text-gray-500">
+                        Ligas Deportivas del Maule / Jugadores
+                    </p>
+
+                    <h2 class="text-2xl font-extrabold text-gray-900 mt-1">
+                        Gestión de jugadores
+                    </h2>
+
+                    <p class="text-sm text-gray-500 mt-1">
+                        Registra, consulta, edita y administra los jugadores.
+                    </p>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <div class="hidden sm:block text-right">
+                        <p class="text-sm font-semibold">Sistema de gestión</p>
+                        <p class="text-xs text-gray-500">Django · AWS RDS MySQL</p>
+                    </div>
+
+                    <a href="{% url 'crear_jugador' %}"
+                       class="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white rounded-lg px-5 py-3 font-semibold text-sm transition">
+                        <i class="fa-solid fa-user-plus"></i>
+                        Registrar jugador
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <div class="p-5 md:p-8 space-y-8">
+
+            <!-- MENSAJES -->
+            {% if messages %}
+                <div class="space-y-2">
+                    {% for message in messages %}
+                        <div class="rounded-xl border px-4 py-3 text-sm
+                            {% if message.tags == 'success' %}
+                                bg-green-50 border-green-200 text-green-800
+                            {% elif message.tags == 'error' %}
+                                bg-red-50 border-red-200 text-red-800
+                            {% else %}
+                                bg-blue-50 border-blue-200 text-blue-800
+                            {% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- RESUMEN -->
+            <section>
+                <div class="mb-4">
+                    <h3 class="text-lg font-bold">Resumen de jugadores</h3>
+                    <p class="text-sm text-gray-500 mt-1">
+                        Información de las plantillas registradas en el sistema.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+
+                    <article class="stat-card bg-white rounded-2xl border border-gray-200 p-5">
+                        <div class="flex items-center justify-between">
+                            <div class="w-12 h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <span class="text-xs font-semibold text-gray-400">TOTAL</span>
+                        </div>
+
+                        <p class="text-sm text-gray-500 mt-5">Jugadores registrados</p>
+                        <p class="text-3xl font-extrabold mt-1">
+                            {{ total_jugadores|default_if_none:0 }}
+                        </p>
+                        <p class="text-xs text-gray-500 mt-2">
+                            Registros disponibles en la plataforma.
+                        </p>
+                    </article>
+
+                    <article class="stat-card bg-white rounded-2xl border border-gray-200 p-5">
+                        <div class="flex items-center justify-between">
+                            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                            <span class="text-xs font-semibold text-gray-400">EQUIPOS</span>
+                        </div>
+
+                        <p class="text-sm text-gray-500 mt-5">Plantillas deportivas</p>
+                        <p class="text-xl font-extrabold mt-1">Gestión de equipos</p>
+
+                        <a href="{% url 'equipos' %}"
+                           class="text-xs text-blue-600 mt-2 inline-block">
+                            Consultar equipos
+                            <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </a>
+                    </article>
+
+                    <article class="stat-card bg-white rounded-2xl border border-gray-200 p-5">
+                        <div class="flex items-center justify-between">
+                            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-user-plus"></i>
+                            </div>
+                            <span class="text-xs font-semibold text-gray-400">ACCESO RÁPIDO</span>
+                        </div>
+
+                        <p class="text-sm text-gray-500 mt-5">Nuevo jugador</p>
+                        <p class="text-xl font-extrabold mt-1">Registrar jugador</p>
+
+                        <a href="{% url 'crear_jugador' %}"
+                           class="text-xs text-emerald-600 mt-2 inline-block">
+                            Crear registro
+                            <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </a>
+                    </article>
+
+                </div>
+            </section>
+
+            <!-- TABLA DE JUGADORES -->
+            <section class="section-card overflow-hidden">
+
+                <div class="p-5 md:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                        <h3 class="text-lg font-bold">Jugadores registrados</h3>
+                        <p class="text-sm text-gray-500 mt-1">
+                            Consulta los datos y administra cada registro.
+                        </p>
+                    </div>
+
+                    <div class="w-full sm:max-w-sm">
+                        <label for="buscador"
+                               class="mb-2 block text-xs font-bold uppercase tracking-wide text-gray-500">
+                            Buscar jugador
+                        </label>
+
+                        <input
+                            type="search"
+                            id="buscador"
+                            class="field"
+                            placeholder="Nombre, apellido o equipo..."
+                            aria-label="Buscar jugadores"
+                        >
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table id="tablaJugadores" class="w-full min-w-[850px] text-left text-sm">
+                        <thead class="bg-gray-50 text-xs uppercase tracking-wide text-gray-500">
+                            <tr>
+                                <th class="px-5 py-4 font-semibold">ID</th>
+                                <th class="px-5 py-4 font-semibold">Jugador</th>
+                                <th class="px-5 py-4 font-semibold">Camiseta</th>
+                                <th class="px-5 py-4 font-semibold">Equipo</th>
+                                <th class="px-5 py-4 font-semibold">Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="divide-y divide-gray-100">
+                            {% for jugador in jugadores %}
+                                <tr class="player-row transition">
+                                    <td class="px-5 py-4 font-medium text-gray-500">
+                                        #{{ jugador.id_jugador }}
+                                    </td>
+
+                                    <td class="px-5 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 shrink-0 rounded-full bg-red-50 text-red-600 flex items-center justify-center font-extrabold">
+                                                {{ jugador.nombre|first|upper }}{{ jugador.apellido|first|upper }}
+                                            </div>
+
+                                            <div>
+                                                <p class="font-bold text-gray-900">
+                                                    {{ jugador.nombre }} {{ jugador.apellido }}
+                                                </p>
+                                                <p class="text-xs text-gray-500 mt-1">
+                                                    Jugador registrado
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td class="px-5 py-4">
+                                        <span class="inline-flex min-w-10 items-center justify-center rounded-lg bg-gray-100 px-3 py-2 font-extrabold text-gray-700">
+                                            {{ jugador.numero_camiseta|default_if_none:"—" }}
+                                        </span>
+                                    </td>
+
+                                    <td class="px-5 py-4">
+                                        <span class="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1.5 font-semibold text-blue-700">
+                                            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                            {{ jugador.id_equipo.nombre|default:"Sin equipo" }}
+                                        </span>
+                                    </td>
+
+                                    <td class="px-5 py-4">
+                                        <div class="flex items-center gap-2">
+                                            <a href="{% url 'editar_jugador' jugador.pk %}"
+                                               class="action-btn btn-edit">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                                Editar
+                                            </a>
+
+                                            <form
+                                                method="post"
+                                                action="{% url 'eliminar_jugador' jugador.pk %}"
+                                                onsubmit="return confirm('¿Estás seguro de que deseas eliminar a {{ jugador.nombre|escapejs }} {{ jugador.apellido|escapejs }}? Esta acción no se puede deshacer.');">
+                                                {% csrf_token %}
+
+                                                <button type="submit" class="action-btn btn-delete">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                    Eliminar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr id="filaVacia">
+                                    <td colspan="5" class="px-5 py-14 text-center">
+                                        <div class="text-4xl text-gray-300">
+                                            <i class="fa-solid fa-users"></i>
+                                        </div>
+
+                                        <p class="mt-4 font-bold text-gray-800">
+                                            No hay jugadores registrados
+                                        </p>
+
+                                        <p class="mt-2 text-sm text-gray-500">
+                                            Registra tu primer jugador para comenzar a administrar la plantilla.
+                                        </p>
+
+                                        <a href="{% url 'crear_jugador' %}"
+                                           class="inline-flex mt-5 items-center gap-2 bg-red-600 hover:bg-red-700 text-white rounded-lg px-5 py-3 font-semibold text-sm">
+                                            <i class="fa-solid fa-user-plus"></i>
+                                            Registrar jugador
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-between gap-3 border-t border-gray-200 bg-gray-50 px-5 py-4">
+                    <p id="contadorResultados" class="text-sm text-gray-500">
+                        Mostrando jugadores registrados
+                    </p>
+
+                    <a href="{% url 'index' %}"
+                       class="text-sm font-semibold text-red-600 hover:text-red-800">
+                        <i class="fa-solid fa-arrow-left mr-1"></i>
+                        Volver al panel principal
+                    </a>
+                </div>
+
+                <p id="sinResultados" class="px-5 py-8 text-center text-sm text-gray-500" hidden>
+                    No se encontraron jugadores que coincidan con la búsqueda.
+                </p>
+
+            </section>
+
+            <!-- PIE DE PÁGINA -->
+            <footer class="border-t border-gray-200 pt-5 pb-2">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-gray-500">
+                    <p>
+                        © {% now "Y" %} CHAMPMANAGER · Ligas Deportivas del Maule
+                    </p>
+                    <p>
+                        Plataforma desarrollada con Django y AWS RDS MySQL.
+                    </p>
+                </div>
+            </footer>
+
+        </div>
+    </main>
+</div>
+
+<script>
+    const buscador = document.getElementById("buscador");
+    const tabla = document.getElementById("tablaJugadores");
+    const sinResultados = document.getElementById("sinResultados");
+    const contador = document.getElementById("contadorResultados");
+
+    const filas = Array.from(
+        tabla.querySelectorAll("tbody tr")
+    ).filter(fila => fila.id !== "filaVacia");
+
+    const filaVacia = document.getElementById("filaVacia");
+
+    function actualizarTabla() {
+        const texto = buscador.value.toLowerCase().trim();
+        let encontrados = 0;
+
+        filas.forEach(fila => {
+            const coincide = fila.innerText.toLowerCase().includes(texto);
+            fila.hidden = !coincide;
+
+            if (coincide) {
+                encontrados++;
+            }
+        });
+
+        if (filaVacia) {
+            sinResultados.hidden = true;
+            contador.textContent = "No hay jugadores registrados.";
+            return;
+        }
+
+        sinResultados.hidden = texto === "" || encontrados > 0;
+
+        contador.textContent = texto
+            ? `Resultados encontrados: ${encontrados}`
+            : `Jugadores registrados: ${filas.length}`;
+    }
+
+    buscador.addEventListener("input", actualizarTabla);
+    actualizarTabla();
+
+</script>
+
+</body>
+</html>
