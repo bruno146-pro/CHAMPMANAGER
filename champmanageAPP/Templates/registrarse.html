@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Crear cuenta | CHAMPMANAGER</title>
+    <meta name="description" content="Crea tu cuenta en CHAMPMANAGER y comienza a gestionar campeonatos deportivos.">
+    <meta name="theme-color" content="#080d18">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,18 +38,22 @@
         }
 
         .input-field {
+            display: block;
             width: 100%;
-            padding: 12px 14px;
+            padding: 13px 14px;
             border: 1px solid #334155;
             border-radius: 12px;
             background: #0b1220;
             color: #f8fafc;
+            font-family: inherit;
+            font-size: 14px;
             outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
         }
 
         .input-field:focus {
             border-color: #ef4444;
+            background: #0d1526;
             box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.13);
         }
 
@@ -55,14 +61,23 @@
             color: #64748b;
         }
 
+        .input-field:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         .register-button {
             background: linear-gradient(135deg, #dc2626, #b91c1c);
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
         }
 
         .register-button:hover {
             transform: translateY(-1px);
             box-shadow: 0 10px 25px rgba(220, 38, 38, 0.22);
+        }
+
+        .register-button:active {
+            transform: translateY(0);
         }
 
         .brand-icon {
@@ -77,9 +92,67 @@
         }
 
         .error-list {
+            margin-top: 6px;
             color: #fca5a5;
             font-size: 12px;
-            margin-top: 6px;
+            line-height: 1.6;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.75);
+            color: #cbd5e1;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .back-button:hover {
+            border-color: rgba(248, 113, 113, 0.5);
+            background: rgba(30, 41, 59, 0.95);
+            color: white;
+            transform: translateX(-2px);
+        }
+
+        .password-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            padding: 0 14px;
+            border: 0;
+            background: transparent;
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .password-toggle:hover {
+            color: white;
+        }
+
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible {
+            outline: 2px solid #f87171;
+            outline-offset: 3px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
@@ -88,10 +161,11 @@
 
     <main class="w-full max-w-lg">
 
-        <!-- Marca -->
-        <div class="mb-8 text-center">
+        <!-- Marca de CHAMPMANAGER -->
+        <header class="mb-7 text-center">
             <a href="{% url 'index' %}"
-               class="inline-flex items-center justify-center gap-3 mb-5">
+               class="mb-4 inline-flex items-center justify-center gap-3"
+               aria-label="Ir al inicio de CHAMPMANAGER">
 
                 <div class="brand-icon flex h-14 w-14 items-center justify-center rounded-2xl">
                     <svg xmlns="http://www.w3.org/2000/svg"
@@ -102,7 +176,8 @@
                          stroke="white"
                          stroke-width="1.8"
                          stroke-linecap="round"
-                         stroke-linejoin="round">
+                         stroke-linejoin="round"
+                         aria-hidden="true">
                         <circle cx="12" cy="12" r="10"></circle>
                         <path d="m8 4 4 2 4-2"></path>
                         <path d="m4 8 4 1 1 4-3 3"></path>
@@ -116,6 +191,7 @@
                     <h1 class="text-2xl font-extrabold tracking-tight">
                         CHAMP<span class="text-red-500">MANAGER</span>
                     </h1>
+
                     <p class="text-xs font-medium uppercase tracking-widest text-slate-400">
                         Gestión deportiva
                     </p>
@@ -123,11 +199,30 @@
             </a>
 
             <p class="text-sm text-slate-400">
-                Crea tu cuenta y comienza a gestionar campeonatos.
+                Tu plataforma para organizar y gestionar campeonatos.
             </p>
+        </header>
+
+        <!-- Volver al inicio -->
+        <div class="mb-4">
+            <a href="{% url 'index' %}" class="back-button">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="17"
+                     height="17"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2"
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                     aria-hidden="true">
+                    <path d="m15 18-6-6 6-6"></path>
+                </svg>
+                Volver al inicio
+            </a>
         </div>
 
-        <!-- Formulario de registro -->
+        <!-- Tarjeta de registro -->
         <section class="register-card rounded-3xl p-6 sm:p-8">
 
             <div class="mb-7">
@@ -140,7 +235,8 @@
                          stroke="#f87171"
                          stroke-width="2"
                          stroke-linecap="round"
-                         stroke-linejoin="round">
+                         stroke-linejoin="round"
+                         aria-hidden="true">
                         <path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                         <circle cx="10" cy="7" r="4"></circle>
                         <line x1="19" y1="8" x2="19" y2="14"></line>
@@ -153,13 +249,13 @@
                 </h2>
 
                 <p class="mt-2 text-sm leading-6 text-slate-400">
-                    Completa los siguientes datos para registrarte en la plataforma.
+                    Completa tus datos para comenzar a gestionar tus campeonatos.
                 </p>
             </div>
 
-            <!-- Mensajes -->
+            <!-- Mensajes de Django -->
             {% if messages %}
-                <div class="mb-5 space-y-3">
+                <div class="mb-5 space-y-3" aria-live="polite">
                     {% for message in messages %}
                         <div class="rounded-xl border px-4 py-3 text-sm
                             {% if message.tags == 'error' %}
@@ -175,57 +271,83 @@
                 </div>
             {% endif %}
 
-            <!-- Errores generales del formulario -->
+            <!-- Errores generales enviados por la vista -->
             {% if errores %}
-                <div class="mb-5 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+                <div role="alert"
+                     class="mb-5 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
                     {{ errores }}
                 </div>
             {% endif %}
 
-            <form method="POST" action="{% url 'registrarse' %}" class="space-y-5">
+            <!-- Errores del formulario Django -->
+            {% if form.non_field_errors %}
+                <div role="alert"
+                     class="mb-5 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3">
+                    {% for error in form.non_field_errors %}
+                        <p class="text-sm text-red-300">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="POST"
+                  action="{% url 'registrarse' %}"
+                  class="space-y-5"
+                  autocomplete="on">
+
                 {% csrf_token %}
 
-                <!-- Nombre -->
-                <div>
-                    <label for="nombre"
-                           class="mb-2 block text-sm font-semibold text-slate-200">
-                        Nombre
-                    </label>
+                <!-- Nombre y apellido -->
+                <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
 
-                    <input
-                        type="text"
-                        name="first_name"
-                        id="nombre"
-                        class="input-field"
-                        placeholder="Ingresa tu nombre"
-                        autocomplete="given-name"
-                        maxlength="150"
-                        required
-                        value="{{ request.POST.first_name|default:'' }}"
-                    >
+                    <div>
+                        <label for="nombre"
+                               class="mb-2 block text-sm font-semibold text-slate-200">
+                            Nombre
+                        </label>
+
+                        <input
+                            type="text"
+                            name="first_name"
+                            id="nombre"
+                            class="input-field"
+                            placeholder="Tu nombre"
+                            autocomplete="given-name"
+                            maxlength="150"
+                            required
+                            value="{{ request.POST.first_name|default:'' }}"
+                        >
+
+                        {% if errores.first_name %}
+                            <p class="error-list">{{ errores.first_name }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="apellido"
+                               class="mb-2 block text-sm font-semibold text-slate-200">
+                            Apellido
+                        </label>
+
+                        <input
+                            type="text"
+                            name="last_name"
+                            id="apellido"
+                            class="input-field"
+                            placeholder="Tu apellido"
+                            autocomplete="family-name"
+                            maxlength="150"
+                            required
+                            value="{{ request.POST.last_name|default:'' }}"
+                        >
+
+                        {% if errores.last_name %}
+                            <p class="error-list">{{ errores.last_name }}</p>
+                        {% endif %}
+                    </div>
+
                 </div>
 
-                <!-- Apellido -->
-                <div>
-                    <label for="apellido"
-                           class="mb-2 block text-sm font-semibold text-slate-200">
-                        Apellido
-                    </label>
-
-                    <input
-                        type="text"
-                        name="last_name"
-                        id="apellido"
-                        class="input-field"
-                        placeholder="Ingresa tu apellido"
-                        autocomplete="family-name"
-                        maxlength="150"
-                        required
-                        value="{{ request.POST.last_name|default:'' }}"
-                    >
-                </div>
-
-                <!-- Usuario -->
+                <!-- Nombre de usuario -->
                 <div>
                     <label for="username"
                            class="mb-2 block text-sm font-semibold text-slate-200">
@@ -239,21 +361,32 @@
                         class="input-field"
                         placeholder="Ejemplo: bruno_caro"
                         autocomplete="username"
+                        autocapitalize="none"
+                        spellcheck="false"
                         maxlength="150"
                         required
                         value="{{ request.POST.username|default:'' }}"
+                        aria-describedby="username-help"
                     >
 
-                    <p class="help-text mt-2">
-                        Este será el nombre que utilizarás para iniciar sesión.
+                    <p id="username-help" class="help-text mt-2">
+                        Este nombre te permitirá iniciar sesión en la plataforma.
                     </p>
 
                     {% if errores.username %}
                         <p class="error-list">{{ errores.username }}</p>
                     {% endif %}
+
+                    {% if form.username.errors %}
+                        <div class="error-list">
+                            {% for error in form.username.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
 
-                <!-- Correo -->
+                <!-- Correo electrónico -->
                 <div>
                     <label for="email"
                            class="mb-2 block text-sm font-semibold text-slate-200">
@@ -265,11 +398,21 @@
                         name="email"
                         id="email"
                         class="input-field"
-                        placeholder="correo@ejemplo.com"
+                        placeholder="usuario@champmanager.cl"
                         autocomplete="email"
+                        maxlength="254"
                         required
                         value="{{ request.POST.email|default:'' }}"
+                        aria-describedby="email-help"
                     >
+
+                    <p id="email-help" class="help-text mt-2">
+                        Puedes utilizar un correo ficticio para tu cuenta. No enviaremos un correo de verificación.
+                    </p>
+
+                    {% if errores.email %}
+                        <p class="error-list">{{ errores.email }}</p>
+                    {% endif %}
                 </div>
 
                 <!-- Contraseña -->
@@ -284,32 +427,41 @@
                             type="password"
                             name="password1"
                             id="password1"
-                            class="input-field pr-12"
-                            placeholder="Crea una contraseña"
+                            class="input-field pr-20"
+                            placeholder="Crea una contraseña segura"
                             autocomplete="new-password"
                             required
+                            aria-describedby="password-help"
                         >
 
                         <button
                             type="button"
-                            class="toggle-password absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 transition hover:text-white"
+                            class="password-toggle"
                             data-target="password1"
                             aria-label="Mostrar contraseña"
-                        >
+                            aria-pressed="false">
                             Mostrar
                         </button>
                     </div>
 
-                    <p class="help-text mt-2">
-                        Utiliza una contraseña segura que no compartas con otras personas.
+                    <p id="password-help" class="help-text mt-2">
+                        Evita utilizar contraseñas fáciles de adivinar.
                     </p>
 
                     {% if errores.password1 %}
                         <p class="error-list">{{ errores.password1 }}</p>
                     {% endif %}
+
+                    {% if form.password1.errors %}
+                        <div class="error-list">
+                            {% for error in form.password1.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
 
-                <!-- Confirmar contraseña -->
+                <!-- Confirmación de contraseña -->
                 <div>
                     <label for="password2"
                            class="mb-2 block text-sm font-semibold text-slate-200">
@@ -321,28 +473,41 @@
                             type="password"
                             name="password2"
                             id="password2"
-                            class="input-field pr-12"
-                            placeholder="Vuelve a escribir tu contraseña"
+                            class="input-field pr-20"
+                            placeholder="Repite tu contraseña"
                             autocomplete="new-password"
                             required
+                            aria-describedby="password2-help"
                         >
 
                         <button
                             type="button"
-                            class="toggle-password absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 transition hover:text-white"
+                            class="password-toggle"
                             data-target="password2"
                             aria-label="Mostrar confirmación de contraseña"
-                        >
+                            aria-pressed="false">
                             Mostrar
                         </button>
                     </div>
 
+                    <p id="password2-help" class="help-text mt-2">
+                        Escribe exactamente la misma contraseña.
+                    </p>
+
                     {% if errores.password2 %}
                         <p class="error-list">{{ errores.password2 }}</p>
                     {% endif %}
+
+                    {% if form.password2.errors %}
+                        <div class="error-list">
+                            {% for error in form.password2.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
 
-                <!-- Aviso de permisos -->
+                <!-- Información sobre permisos -->
                 <div class="rounded-xl border border-blue-500/20 bg-blue-500/5 p-4">
                     <div class="flex items-start gap-3">
                         <svg xmlns="http://www.w3.org/2000/svg"
@@ -354,24 +519,26 @@
                              stroke-width="2"
                              stroke-linecap="round"
                              stroke-linejoin="round"
-                             class="mt-0.5 shrink-0">
+                             class="mt-0.5 shrink-0"
+                             aria-hidden="true">
                             <circle cx="12" cy="12" r="10"></circle>
                             <line x1="12" y1="16" x2="12" y2="12"></line>
                             <line x1="12" y1="8" x2="12.01" y2="8"></line>
                         </svg>
 
                         <p class="text-xs leading-5 text-slate-300">
-                            La cuenta creada tendrá permisos de usuario normal.
-                            El registro no otorga permisos de administrador del sistema.
+                            Tu cuenta se creará con permisos de usuario normal.
+                            Los privilegios administrativos están reservados para los administradores.
                         </p>
                     </div>
                 </div>
 
+                <!-- Botón de registro -->
                 <button
                     type="submit"
-                    class="register-button flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 font-bold text-white"
-                >
-                    Crear cuenta
+                    class="register-button flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 font-bold text-white">
+
+                    <span>Crear mi cuenta</span>
 
                     <svg xmlns="http://www.w3.org/2000/svg"
                          width="18"
@@ -381,65 +548,59 @@
                          stroke="currentColor"
                          stroke-width="2"
                          stroke-linecap="round"
-                         stroke-linejoin="round">
+                         stroke-linejoin="round"
+                         aria-hidden="true">
                         <path d="M5 12h14"></path>
                         <path d="m12 5 7 7-7 7"></path>
                     </svg>
                 </button>
+
             </form>
 
+            <!-- Separador -->
             <div class="my-6 flex items-center gap-3">
                 <div class="h-px flex-1 bg-slate-700"></div>
                 <span class="text-xs text-slate-500">¿YA TIENES CUENTA?</span>
                 <div class="h-px flex-1 bg-slate-700"></div>
             </div>
 
+            <!-- Ir al inicio de sesión -->
             <p class="text-center text-sm text-slate-400">
-                Inicia sesión en tu cuenta
+                Accede a tu cuenta
+
                 <a href="{% url 'login' %}"
                    class="font-semibold text-red-400 transition hover:text-red-300">
-                    aquí
+                    Iniciar sesión
                 </a>
             </p>
 
         </section>
 
-        <!-- Volver al inicio -->
-        <div class="mt-6 text-center">
-            <a href="{% url 'index' %}"
-               class="inline-flex items-center gap-2 text-sm text-slate-400 transition hover:text-white">
-                <svg xmlns="http://www.w3.org/2000/svg"
-                     width="16"
-                     height="16"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="2"
-                     stroke-linecap="round"
-                     stroke-linejoin="round">
-                    <path d="m15 18-6-6 6-6"></path>
-                </svg>
-                Volver al inicio
-            </a>
-        </div>
-
+        <!-- Pie de página -->
         <footer class="mt-8 text-center text-xs text-slate-600">
             © {% now "Y" %} CHAMPMANAGER · Plataforma de gestión de campeonatos
         </footer>
 
     </main>
 
+    <!-- Mostrar u ocultar contraseñas -->
     <script>
-        document.querySelectorAll(".toggle-password").forEach(function (button) {
+        document.querySelectorAll(".password-toggle").forEach(function (button) {
             button.addEventListener("click", function () {
                 const input = document.getElementById(button.dataset.target);
                 const mostrar = input.type === "password";
 
                 input.type = mostrar ? "text" : "password";
                 button.textContent = mostrar ? "Ocultar" : "Mostrar";
+
                 button.setAttribute(
                     "aria-label",
                     mostrar ? "Ocultar contraseña" : "Mostrar contraseña"
+                );
+
+                button.setAttribute(
+                    "aria-pressed",
+                    mostrar ? "true" : "false"
                 );
             });
         });

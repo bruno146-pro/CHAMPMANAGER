@@ -176,7 +176,7 @@
 
 <div class="min-h-screen lg:flex">
 
-    <!-- BARRA LATERAL -->
+    <!-- BARRA LATERAL DINÁMICA -->
     <aside class="sidebar flex w-full flex-col text-white lg:sticky lg:top-0 lg:h-screen lg:w-72 lg:shrink-0">
 
         <!-- IDENTIDAD -->
@@ -244,52 +244,61 @@
                 Disciplina y sanciones
             </a>
 
-            <div class="my-5 border-t border-slate-800"></div>
+            {% if user.is_authenticated %}
+                <div class="my-5 border-t border-slate-800"></div>
 
-            <p class="px-3 pb-2 text-xs font-bold uppercase tracking-widest text-slate-500">
-                Herramientas
-            </p>
+                <p class="px-3 pb-2 text-xs font-bold uppercase tracking-widest text-slate-500">
+                    Herramientas
+                </p>
 
-            <a href="{% url 'crear_campeonato' %}" class="sidebar-link">
-                <i class="fa-solid fa-circle-plus w-5 text-center"></i>
-                Nuevo campeonato
-            </a>
+                <a href="{% url 'crear_campeonato' %}" class="sidebar-link">
+                    <i class="fa-solid fa-circle-plus w-5 text-center"></i>
+                    Nuevo campeonato
+                </a>
 
-            <a href="{% url 'crear_equipo' %}" class="sidebar-link">
-                <i class="fa-solid fa-user-plus w-5 text-center"></i>
-                Registrar equipo
-            </a>
+                <a href="{% url 'crear_equipo' %}" class="sidebar-link">
+                    <i class="fa-solid fa-user-plus w-5 text-center"></i>
+                    Registrar equipo
+                </a>
 
-            <a href="{% url 'crear_partido' %}" class="sidebar-link">
-                <i class="fa-solid fa-calendar-plus w-5 text-center"></i>
-                Programar partido
-            </a>
+                <a href="{% url 'crear_partido' %}" class="sidebar-link">
+                    <i class="fa-solid fa-calendar-plus w-5 text-center"></i>
+                    Programar partido
+                </a>
+            {% endif %}
 
             <div class="my-5 border-t border-slate-800"></div>
 
             <!-- CERRAR SESIÓN -->
-            <form method="post" action="{% url 'logout' %}" class="mt-2">
-                {% csrf_token %}
-                <button
-                    type="submit"
-                    class="sidebar-link logout-link"
-                >
-                    <i class="fa-solid fa-right-from-bracket w-5 text-center"></i>
-                    Cerrar sesión
-                </button>
-            </form>
+            {% if user.is_authenticated %}
+                <form method="post" action="{% url 'logout' %}" class="mt-2">
+                    {% csrf_token %}
+                    <button
+                        type="submit"
+                        class="sidebar-link logout-link w-full"
+                    >
+                        <i class="fa-solid fa-right-from-bracket w-5 text-center"></i>
+                        Cerrar sesión
+                    </button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}" class="sidebar-link logout-link text-center block">
+                    <i class="fa-solid fa-right-to-bracket w-5 text-center"></i>
+                    Iniciar sesión
+                </a>
+            {% endif %}
 
         </nav>
 
-        <!-- INFORMACIÓN DEL SISTEMA -->
+        <!-- INFORMACIÓN DEL USUARIO / SISTEMA -->
         <div class="border-t border-slate-800 p-5">
             <div class="rounded-xl border border-slate-800 bg-slate-900 p-4">
                 <div class="flex items-center gap-2">
                     <span class="status-dot"></span>
-                    <p class="text-sm font-semibold">CHAMPMANAGER</p>
+                    <p class="text-sm font-semibold truncate">{{ user.get_full_name|default:user.username|default:"CHAMPMANAGER" }}</p>
                 </div>
-                <p class="mt-2 text-xs leading-5 text-slate-400">
-                    Gestión centralizada de competiciones, equipos, jugadores y resultados.
+                <p class="mt-1 text-xs text-slate-400">
+                    {% if user.is_superuser %}Superadministrador{% elif user.is_staff %}Administrador{% else %}Delegado{% endif %}
                 </p>
             </div>
         </div>
@@ -329,11 +338,13 @@
                         Campeonatos
                     </a>
 
-                    <a href="{% url 'crear_campeonato' %}"
-                       class="inline-flex items-center gap-2 rounded-xl bg-red-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-red-700">
-                        <i class="fa-solid fa-plus"></i>
-                        Nuevo campeonato
-                    </a>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'crear_campeonato' %}"
+                           class="inline-flex items-center gap-2 rounded-xl bg-red-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-red-700">
+                            <i class="fa-solid fa-plus"></i>
+                            Nuevo campeonato
+                        </a>
+                    {% endif %}
                 </div>
             </div>
         </header>
@@ -592,7 +603,7 @@
                 <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 p-5">
                     <div>
                         <h3 class="section-title">Próximos partidos</h3>
-                        <p class="mt-1 text-sm text-slate-500">Encuentros desde hoy en adelante.</p>
+                        <p class="mt-1 text-sm text-slate-500">Encuentros programados desde hoy en adelante.</p>
                     </div>
                     <a href="{% url 'partidos' %}" class="text-sm font-bold text-red-600 hover:text-red-800">
                         Ver calendario →
@@ -601,39 +612,52 @@
 
                 <div class="grid grid-cols-1 gap-3 p-5 md:grid-cols-2 xl:grid-cols-3">
                     {% for partido in proximos_partidos %}
-                    <article class="rounded-xl border border-slate-200 p-4 transition hover:border-red-200 hover:shadow-sm">
+                    <article class="rounded-xl border border-slate-200 bg-white p-4 transition hover:border-red-200 hover:shadow-sm">
                         <div class="flex items-center justify-between gap-3">
                             <span class="rounded-lg bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700">
                                 {{ partido.fecha|date:"d/m/Y"|default:"Fecha pendiente" }}
                             </span>
                             <span class="text-xs text-slate-500">
-                                {{ partido.hora|default:"Hora pendiente" }}
+                                {% if partido.hora %}{{ partido.hora|time:"H:i" }} hrs.{% else %}Hora por confirmar{% endif %}
                             </span>
                         </div>
 
                         <div class="my-4 flex items-center justify-between gap-3">
                             <p class="min-w-0 flex-1 break-words font-bold text-slate-800">
-                                {{ partido.equipo_local.nombre }}
+                                {{ partido.equipo_local.nombre|default:"Equipo local" }}
                             </p>
                             <span class="text-xs font-black text-slate-400">VS</span>
                             <p class="min-w-0 flex-1 break-words text-right font-bold text-slate-800">
-                                {{ partido.equipo_visitante.nombre }}
+                                {{ partido.equipo_visitante.nombre|default:"Equipo visitante" }}
                             </p>
                         </div>
 
-                        <p class="border-t border-slate-100 pt-3 text-xs text-slate-500">
-                            <i class="fa-solid fa-trophy mr-1"></i>
-                            {{ partido.id_campeonato.nombre|default:"Sin campeonato" }}
-                        </p>
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3">
+                            <p class="text-xs text-slate-500">
+                                <i class="fa-solid fa-trophy mr-1"></i>
+                                {{ partido.id_campeonato.nombre|default:"Sin campeonato" }}
+                            </p>
+                            {% if partido.resultado_local != None and partido.resultado_visitante != None %}
+                                <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">
+                                    Resultado: {{ partido.resultado_local }} - {{ partido.resultado_visitante }}
+                                </span>
+                            {% else %}
+                                <span class="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
+                                    Por jugar
+                                </span>
+                            {% endif %}
+                        </div>
                     </article>
                     {% empty %}
                     <div class="empty-state md:col-span-2 xl:col-span-3">
                         <i class="fa-regular fa-calendar-xmark text-3xl text-slate-300"></i>
                         <p class="mt-3 font-bold text-slate-700">No hay próximos partidos</p>
-                        <p class="mt-1 text-sm text-slate-500">Los partidos futuros aparecerán aquí.</p>
-                        <a href="{% url 'crear_partido' %}" class="mt-4 inline-block font-bold text-red-600 hover:text-red-800">
-                            Programar partido →
-                        </a>
+                        <p class="mt-1 text-sm text-slate-500">Todavía no hay encuentros con fecha de hoy o posterior.</p>
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'crear_partido' %}" class="mt-4 inline-block rounded-lg bg-red-600 px-4 py-2 font-bold text-white transition hover:bg-red-700">
+                                <i class="fa-solid fa-calendar-plus mr-1"></i> Programar partido
+                            </a>
+                        {% endif %}
                     </div>
                     {% endfor %}
                 </div>
@@ -674,9 +698,11 @@
                         <div class="empty-state">
                             <i class="fa-solid fa-trophy text-3xl text-slate-300"></i>
                             <p class="mt-3 font-bold text-slate-700">Sin campeonatos registrados</p>
-                            <a href="{% url 'crear_campeonato' %}" class="mt-3 inline-block text-sm font-bold text-red-600">
-                                Crear campeonato →
-                            </a>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'crear_campeonato' %}" class="mt-3 inline-block text-sm font-bold text-red-600">
+                                    Crear campeonato →
+                                </a>
+                            {% endif %}
                         </div>
                         {% endfor %}
                     </div>
@@ -692,7 +718,7 @@
                 <div class="panel overflow-hidden">
                     <div class="border-b border-slate-200 p-5">
                         <h3 class="section-title">Equipos destacados</h3>
-                        <p class="mt-1 text-sm text-slate-500">Equipos con más jugadores registrados.</p>
+                        <p class="mt-1 text-sm text-slate-500">Últimos equipos registrados en el sistema.</p>
                     </div>
 
                     <div class="divide-y divide-slate-100">
@@ -703,22 +729,27 @@
                                     <i class="fa-solid fa-shield-halved"></i>
                                 </div>
                                 <div class="min-w-0">
-                                    <p class="break-words font-bold text-slate-800">{{ equipo.nombre }}</p>
-                                    <p class="mt-1 text-xs text-slate-500">Jugadores inscritos</p>
+                                    <p class="break-words font-bold text-slate-800">
+                                        {{ equipo.nombre }}
+                                    </p>
+                                    <p class="mt-1 text-xs text-slate-500">
+                                        {{ equipo.ciudad|default:"Club registrado" }}
+                                    </p>
                                 </div>
                             </div>
-
-                            <span class="shrink-0 rounded-lg bg-blue-50 px-3 py-2 text-sm font-black text-blue-700">
-                                {{ equipo.total_jugadores|default_if_none:0 }}
+                            <span class="shrink-0 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+                                Activo
                             </span>
                         </div>
                         {% empty %}
                         <div class="empty-state">
                             <i class="fa-solid fa-shield-halved text-3xl text-slate-300"></i>
                             <p class="mt-3 font-bold text-slate-700">Sin equipos registrados</p>
-                            <a href="{% url 'crear_equipo' %}" class="mt-3 inline-block text-sm font-bold text-red-600">
-                                Registrar equipo →
-                            </a>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'crear_equipo' %}" class="mt-3 inline-block text-sm font-bold text-red-600">
+                                    Registrar equipo →
+                                </a>
+                            {% endif %}
                         </div>
                         {% endfor %}
                     </div>
@@ -729,406 +760,13 @@
                         </a>
                     </div>
                 </div>
-            </section>
-
-            <!-- PARTIDOS RECIENTES Y GOLEADORES -->
-            <section class="grid grid-cols-1 gap-6 2xl:grid-cols-5">
-
-                <!-- TABLA DE PARTIDOS -->
-                <div class="panel overflow-hidden 2xl:col-span-3">
-                    <div class="flex flex-col gap-3 border-b border-slate-200 p-5 sm:flex-row sm:items-center sm:justify-between">
-                        <div>
-                            <h3 class="section-title">Partidos recientes</h3>
-                            <p class="mt-1 text-sm text-slate-500">Últimos encuentros registrados.</p>
-                        </div>
-                        <a href="{% url 'partidos' %}" class="text-sm font-bold text-red-600 hover:text-red-800">
-                            Ver todos →
-                        </a>
-                    </div>
-
-                    <div class="border-b border-slate-100 p-4">
-                        <label for="buscarPartido" class="sr-only">Buscar partido</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                            <input
-                                id="buscarPartido"
-                                type="search"
-                                class="field pl-9"
-                                placeholder="Buscar equipo o campeonato..."
-                                autocomplete="off"
-                            >
-                        </div>
-                        <p id="contadorBusqueda" class="mt-2 text-xs text-slate-400" aria-live="polite">
-                            Mostrando partidos recientes
-                        </p>
-                    </div>
-
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm">
-                            <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
-                                <tr>
-                                    <th scope="col" class="whitespace-nowrap px-5 py-4 font-semibold">Fecha</th>
-                                    <th scope="col" class="px-5 py-4 font-semibold">Encuentro</th>
-                                    <th scope="col" class="whitespace-nowrap px-5 py-4 text-center font-semibold">Resultado</th>
-                                </tr>
-                            </thead>
-
-                            <tbody class="divide-y divide-slate-100" id="tablaPartidos">
-                                {% for partido in ultimos_partidos %}
-                                <tr class="table-row fila-partido">
-                                    <td class="whitespace-nowrap px-5 py-4 text-slate-600">
-                                        {{ partido.fecha|date:"d/m/Y"|default:"Sin fecha" }}
-                                        <p class="mt-1 text-xs text-slate-400">
-                                            {{ partido.hora|default:"Hora pendiente" }}
-                                        </p>
-                                    </td>
-
-                                    <td class="min-w-48 px-5 py-4">
-                                        <p class="font-bold text-slate-800">{{ partido.equipo_local.nombre }}</p>
-                                        <p class="my-1 text-xs font-semibold text-slate-400">VS</p>
-                                        <p class="font-bold text-slate-800">{{ partido.equipo_visitante.nombre }}</p>
-                                        <p class="mt-2 text-xs text-slate-500">
-                                            {{ partido.id_campeonato.nombre|default:"Sin campeonato" }}
-                                        </p>
-                                    </td>
-
-                                    <td class="whitespace-nowrap px-5 py-4 text-center">
-                                        <span class="inline-flex items-center rounded-lg bg-slate-100 px-3 py-2 font-black text-slate-800">
-                                            {{ partido.resultado_local|default_if_none:"–" }}
-                                            <span class="mx-2 text-slate-400">:</span>
-                                            {{ partido.resultado_visitante|default_if_none:"–" }}
-                                        </span>
-                                    </td>
-                                </tr>
-                                {% empty %}
-                                <tr id="sinPartidosIniciales">
-                                    <td colspan="3" class="px-5 py-10 text-center">
-                                        <i class="fa-solid fa-calendar-xmark text-3xl text-slate-300"></i>
-                                        <p class="mt-3 font-bold text-slate-700">No hay partidos registrados</p>
-                                        <a href="{% url 'crear_partido' %}" class="mt-3 inline-block font-bold text-red-600">
-                                            Crear partido →
-                                        </a>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-
-                                <tr id="sinPartidosFiltrados" class="hidden">
-                                    <td colspan="3" class="px-5 py-8 text-center text-slate-500">
-                                        No se encontraron coincidencias.
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="border-t border-slate-100 bg-slate-50 px-5 py-3 text-xs text-slate-500">
-                        Se muestran hasta 6 partidos recientes.
-                    </div>
-                </div>
-
-                <!-- GOLEADORES -->
-                <div class="panel overflow-hidden 2xl:col-span-2">
-                    <div class="border-b border-slate-200 p-5">
-                        <h3 class="section-title">Máximos goleadores</h3>
-                        <p class="mt-1 text-sm text-slate-500">Ranking según las estadísticas registradas.</p>
-                    </div>
-
-                    <div class="divide-y divide-slate-100">
-                        {% for jugador in goleadores %}
-                        <div class="flex items-center justify-between gap-3 p-4 transition hover:bg-slate-50">
-                            <div class="flex min-w-0 items-center gap-3">
-                                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-black
-                                    {% if forloop.counter == 1 %}bg-amber-100 text-amber-700
-                                    {% elif forloop.counter == 2 %}bg-slate-200 text-slate-700
-                                    {% elif forloop.counter == 3 %}bg-orange-100 text-orange-700
-                                    {% else %}bg-slate-100 text-slate-600{% endif %}">
-                                    {{ forloop.counter }}
-                                </div>
-
-                                <div class="min-w-0">
-                                    <p class="break-words font-bold text-slate-800">
-                                        {{ jugador.id_jugador__nombre }} {{ jugador.id_jugador__apellido }}
-                                    </p>
-                                    <p class="mt-1 text-xs text-slate-500">Ranking de goleadores</p>
-                                </div>
-                            </div>
-
-                            <span class="shrink-0 rounded-lg bg-red-50 px-3 py-2 text-sm font-black text-red-600">
-                                {{ jugador.total_goles|default_if_none:0 }}
-                                <i class="fa-solid fa-futbol"></i>
-                            </span>
-                        </div>
-                        {% empty %}
-                        <div class="empty-state">
-                            <i class="fa-solid fa-bullseye text-3xl text-slate-300"></i>
-                            <p class="mt-3 font-bold text-slate-700">Sin goleadores todavía</p>
-                            <p class="mt-1 text-sm text-slate-500">
-                                Los jugadores aparecerán cuando tengan goles registrados.
-                            </p>
-                        </div>
-                        {% endfor %}
-                    </div>
-
-                    <div class="border-t border-slate-200 bg-slate-50 p-4">
-                        <a href="{% url 'estadisticas' %}" class="text-sm font-bold text-red-600 hover:text-red-800">
-                            Consultar estadísticas →
-                        </a>
-                    </div>
-                </div>
 
             </section>
-
-            <!-- CHECKLIST ADMINISTRATIVA -->
-            <section class="panel p-5 sm:p-6">
-                <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <h3 class="section-title">Lista de revisión administrativa</h3>
-                        <p class="mt-1 text-sm text-slate-500">
-                            Lista de apoyo para revisar el estado de la plataforma.
-                        </p>
-                    </div>
-
-                    <button
-                        type="button"
-                        id="limpiarChecklist"
-                        class="text-sm font-semibold text-slate-500 transition hover:text-red-600"
-                    >
-                        <i class="fa-solid fa-rotate-left mr-1"></i>
-                        Restablecer lista
-                    </button>
-                </div>
-
-                <div class="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2">
-
-                    <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 p-4 transition hover:bg-slate-50">
-                        <input type="checkbox" class="check-admin mt-1 h-4 w-4 accent-red-600">
-                        <span>
-                            <span class="block text-sm font-bold">Revisar campeonatos</span>
-                            <span class="mt-1 block text-xs text-slate-500">Confirmar fechas, nombres y estados.</span>
-                        </span>
-                    </label>
-
-                    <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 p-4 transition hover:bg-slate-50">
-                        <input type="checkbox" class="check-admin mt-1 h-4 w-4 accent-red-600">
-                        <span>
-                            <span class="block text-sm font-bold">Verificar equipos y jugadores</span>
-                            <span class="mt-1 block text-xs text-slate-500">Comprobar asociaciones y fichas.</span>
-                        </span>
-                    </label>
-
-                    <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 p-4 transition hover:bg-slate-50">
-                        <input type="checkbox" class="check-admin mt-1 h-4 w-4 accent-red-600">
-                        <span>
-                            <span class="block text-sm font-bold">Validar resultados</span>
-                            <span class="mt-1 block text-xs text-slate-500">Revisar los marcadores registrados.</span>
-                        </span>
-                    </label>
-
-                    <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 p-4 transition hover:bg-slate-50">
-                        <input type="checkbox" class="check-admin mt-1 h-4 w-4 accent-red-600">
-                        <span>
-                            <span class="block text-sm font-bold">Revisar estadísticas y sanciones</span>
-                            <span class="mt-1 block text-xs text-slate-500">Verificar goles, asistencias y tarjetas.</span>
-                        </span>
-                    </label>
-
-                </div>
-
-                <div class="mt-5">
-                    <div class="mb-2 flex justify-between gap-3 text-xs font-semibold">
-                        <span class="text-slate-500">Progreso de revisión</span>
-                        <span id="progresoTexto" aria-live="polite">0 de 4 completadas</span>
-                    </div>
-
-                    <div
-                        class="h-2 overflow-hidden rounded-full bg-slate-100"
-                        role="progressbar"
-                        aria-label="Progreso de revisión administrativa"
-                        aria-valuemin="0"
-                        aria-valuemax="4"
-                        aria-valuenow="0"
-                        id="progresoContenedor"
-                    >
-                        <div id="progresoBarra" class="h-full rounded-full bg-red-600 transition-all" style="width: 0%"></div>
-                    </div>
-
-                    <p class="mt-2 text-xs text-slate-400">
-                        La checklist funciona en el navegador y no modifica la base de datos.
-                    </p>
-                </div>
-            </section>
-
-            <!-- HERRAMIENTAS ADICIONALES -->
-            <section>
-                <div class="mb-4">
-                    <h3 class="section-title">Herramientas adicionales</h3>
-                    <p class="mt-1 text-sm text-slate-500">
-                        Posibles módulos para ampliar la administración.
-                    </p>
-                </div>
-
-                <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-
-                    <article class="panel p-5">
-                        <div class="icon-box bg-indigo-50 text-indigo-600">
-                            <i class="fa-solid fa-user-shield text-lg"></i>
-                        </div>
-                        <h4 class="mt-4 font-bold">Usuarios y permisos</h4>
-                        <p class="mt-2 text-sm leading-5 text-slate-500">
-                            Administrar cuentas, roles y permisos de acceso.
-                        </p>
-                        <span class="mt-4 inline-flex rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">
-                            Requiere implementación
-                        </span>
-                    </article>
-
-                    <article class="panel p-5">
-                        <div class="icon-box bg-cyan-50 text-cyan-600">
-                            <i class="fa-solid fa-database text-lg"></i>
-                        </div>
-                        <h4 class="mt-4 font-bold">Respaldos de datos</h4>
-                        <p class="mt-2 text-sm leading-5 text-slate-500">
-                            Generar y verificar respaldos protegidos de la base de datos.
-                        </p>
-                        <span class="mt-4 inline-flex rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">
-                            Requiere implementación
-                        </span>
-                    </article>
-
-                    <article class="panel p-5">
-                        <div class="icon-box bg-orange-50 text-orange-600">
-                            <i class="fa-solid fa-clipboard-check text-lg"></i>
-                        </div>
-                        <h4 class="mt-4 font-bold">Registro de actividad</h4>
-                        <p class="mt-2 text-sm leading-5 text-slate-500">
-                            Registrar quién crea, modifica o elimina datos y cuándo.
-                        </p>
-                        <span class="mt-4 inline-flex rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">
-                            Requiere implementación
-                        </span>
-                    </article>
-
-                </div>
-            </section>
-
-            <!-- PIE DE PÁGINA -->
-            <footer class="border-t border-slate-200 py-6">
-                <div class="flex flex-col justify-between gap-2 text-sm text-slate-500 sm:flex-row">
-                    <p>
-                        <strong class="text-slate-700">CHAMPMANAGER</strong>
-                        · Plataforma de gestión deportiva.
-                    </p>
-                    <p>Proyecto de título · INACAP Talca</p>
-                </div>
-            </footer>
 
         </div>
     </main>
+
 </div>
-
-<script>
-    // FECHA ACTUAL
-    (() => {
-        const fechaActual = document.getElementById("fechaActual");
-
-        if (fechaActual) {
-            fechaActual.textContent = new Intl.DateTimeFormat("es-CL", {
-                weekday: "long",
-                day: "numeric",
-                month: "long",
-                year: "numeric"
-            }).format(new Date());
-        }
-    })();
-
-    // BUSCADOR DE PARTIDOS
-    (() => {
-        const buscador = document.getElementById("buscarPartido");
-        const filas = Array.from(document.querySelectorAll(".fila-partido"));
-        const mensajeSinResultados = document.getElementById("sinPartidosFiltrados");
-        const contador = document.getElementById("contadorBusqueda");
-
-        if (!buscador) return;
-
-        function filtrarPartidos() {
-            const termino = buscador.value.trim().toLocaleLowerCase("es-CL");
-            let visibles = 0;
-
-            filas.forEach((fila) => {
-                const contenido = fila.textContent.toLocaleLowerCase("es-CL");
-                const coincide = contenido.includes(termino);
-
-                fila.style.display = coincide ? "" : "none";
-
-                if (coincide) visibles++;
-            });
-
-            if (mensajeSinResultados) {
-                mensajeSinResultados.classList.toggle(
-                    "hidden",
-                    filas.length === 0 || visibles > 0
-                );
-            }
-
-            if (contador) {
-                if (filas.length === 0) {
-                    contador.textContent = "No hay partidos disponibles para buscar.";
-                } else {
-                    contador.textContent =
-                        `Mostrando ${visibles} de ${filas.length} partidos`;
-                }
-            }
-        }
-
-        buscador.addEventListener("input", filtrarPartidos);
-        filtrarPartidos();
-    })();
-
-    // CHECKLIST ADMINISTRATIVA
-    (() => {
-        const checks = Array.from(document.querySelectorAll(".check-admin"));
-        const textoProgreso = document.getElementById("progresoTexto");
-        const barraProgreso = document.getElementById("progresoBarra");
-        const contenedorProgreso = document.getElementById("progresoContenedor");
-        const botonLimpiar = document.getElementById("limpiarChecklist");
-
-        function actualizarProgreso() {
-            const total = checks.length;
-            const completadas = checks.filter((check) => check.checked).length;
-            const porcentaje = total > 0 ? (completadas / total) * 100 : 0;
-
-            if (textoProgreso) {
-                textoProgreso.textContent = `${completadas} de ${total} completadas`;
-            }
-
-            if (barraProgreso) {
-                barraProgreso.style.width = `${porcentaje}%`;
-            }
-
-            if (contenedorProgreso) {
-                contenedorProgreso.setAttribute("aria-valuenow", String(completadas));
-                contenedorProgreso.setAttribute("aria-valuemax", String(total));
-            }
-        }
-
-        checks.forEach((check) => {
-            check.addEventListener("change", actualizarProgreso);
-        });
-
-        if (botonLimpiar) {
-            botonLimpiar.addEventListener("click", () => {
-                checks.forEach((check) => {
-                    check.checked = false;
-                });
-
-                actualizarProgreso();
-            });
-        }
-
-        actualizarProgreso();
-    })();
-</script>
 
 </body>
 </html>
-```

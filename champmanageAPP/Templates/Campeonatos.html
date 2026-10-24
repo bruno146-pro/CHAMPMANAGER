@@ -127,7 +127,7 @@
 
 <div class="min-h-screen md:flex">
 
-    <!-- BARRA LATERAL -->
+    <!-- BARRA LATERAL DINÁMICA -->
     <aside class="sidebar text-white w-full md:w-64 md:min-h-screen md:fixed md:inset-y-0 md:left-0 z-20">
 
         <div class="px-6 py-6 border-b border-gray-700">
@@ -150,61 +150,133 @@
             </p>
 
             <a href="{% url 'index' %}" class="nav-link">
-                <i class="fa-solid fa-chart-pie w-5"></i>
-                Panel principal
+                <i class="fa-solid fa-house w-5"></i>
+                Inicio
             </a>
 
-            <a href="{% url 'campeonatos' %}" class="nav-link active">
-                <i class="fa-solid fa-trophy w-5"></i>
-                Campeonatos
-            </a>
+            {% if user.is_authenticated %}
 
-            <a href="{% url 'equipos' %}" class="nav-link">
-                <i class="fa-solid fa-shield-halved w-5"></i>
-                Equipos
-            </a>
-
-            <a href="{% url 'jugadores' %}" class="nav-link">
-                <i class="fa-solid fa-users w-5"></i>
-                Jugadores
-            </a>
-
-            <a href="{% url 'partidos' %}" class="nav-link">
-                <i class="fa-solid fa-futbol w-5"></i>
-                Partidos
-            </a>
-
-            <a href="{% url 'estadisticas' %}" class="nav-link">
-                <i class="fa-solid fa-chart-column w-5"></i>
-                Estadísticas
-            </a>
-
-            <a href="{% url 'sanciones' %}" class="nav-link">
-                <i class="fa-solid fa-rectangle-list w-5"></i>
-                Sanciones
-            </a>
-
-            <div class="pt-5">
-                <p class="text-xs uppercase tracking-widest text-gray-500 px-3 py-2">
-                    Administración
-                </p>
-                <a href="/admin/" class="nav-link">
-                    <i class="fa-solid fa-gear w-5"></i>
-                    Administrar sistema
+                <a href="{% url 'campeonatos' %}" class="nav-link active">
+                    <i class="fa-solid fa-trophy w-5"></i>
+                    Campeonatos
                 </a>
-            </div>
+
+                <a href="{% url 'equipos' %}" class="nav-link">
+                    <i class="fa-solid fa-shield-halved w-5"></i>
+                    Equipos
+                </a>
+
+                <a href="{% url 'jugadores' %}" class="nav-link">
+                    <i class="fa-solid fa-users w-5"></i>
+                    Jugadores
+                </a>
+
+                <a href="{% url 'partidos' %}" class="nav-link">
+                    <i class="fa-solid fa-futbol w-5"></i>
+                    Partidos
+                </a>
+
+                <a href="{% url 'estadisticas' %}" class="nav-link">
+                    <i class="fa-solid fa-chart-column w-5"></i>
+                    Estadísticas
+                </a>
+
+                <a href="{% url 'sanciones' %}" class="nav-link">
+                    <i class="fa-solid fa-rectangle-list w-5"></i>
+                    Sanciones
+                </a>
+
+            {% else %}
+
+                <div class="mt-3 rounded-xl border border-gray-700 bg-gray-800 p-4">
+                    <i class="fa-solid fa-lock text-red-400"></i>
+
+                    <p class="mt-2 text-sm font-semibold text-white">
+                        Módulos bloqueados
+                    </p>
+
+                    <p class="mt-1 text-xs leading-5 text-gray-400">
+                        Inicia sesión para utilizar los módulos del sistema.
+                    </p>
+
+                    <a href="{% url 'login' %}"
+                       class="mt-3 block rounded-lg bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-red-700">
+                        <i class="fa-solid fa-right-to-bracket mr-1"></i>
+                        Iniciar sesión
+                    </a>
+
+                    <a href="{% url 'registrarse' %}"
+                       class="mt-2 block rounded-lg border border-gray-600 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-gray-700">
+                        <i class="fa-solid fa-user-plus mr-1"></i>
+                        Crear cuenta
+                    </a>
+                </div>
+
+            {% endif %}
+
+            {% if user.is_authenticated and user.is_staff %}
+                <div class="pt-5">
+                    <p class="text-xs uppercase tracking-widest text-gray-500 px-3 py-2">
+                        Administración
+                    </p>
+
+                    <a href="{% url 'admin_panel' %}" class="nav-link">
+                        <i class="fa-solid fa-gear w-5"></i>
+                        Administrar sistema
+                    </a>
+                </div>
+            {% endif %}
         </nav>
 
-        <div class="px-5 py-5 border-t border-gray-700">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
-                    <i class="fa-solid fa-user"></i>
+        <!-- USUARIO Y CIERRE DE SESIÓN DINÁMICO -->
+        <div class="px-5 py-5 mt-2 border-t border-gray-700">
+            {% if user.is_authenticated %}
+
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+
+                    <div class="min-w-0">
+                        <p class="text-sm font-semibold truncate">
+                            {{ user.get_full_name|default:user.username }}
+                        </p>
+
+                        <p class="text-xs text-gray-400">
+                            {% if user.is_superuser %}
+                                Superadministrador
+                            {% elif user.is_staff %}
+                                Administrador
+                            {% else %}
+                                Delegado
+                            {% endif %}
+                        </p>
+                    </div>
                 </div>
-                <div>
-                    <p class="text-sm font-semibold">Administrador</p>
-                    <p class="text-xs text-gray-400">CHAMPMANAGER</p>
+
+                <form method="post" action="{% url 'logout' %}" class="mt-4">
+                    {% csrf_token %}
+                    <button type="submit"
+                            class="w-full rounded-lg border border-gray-700 px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white">
+                        <i class="fa-solid fa-right-from-bracket mr-2"></i>
+                        Cerrar sesión
+                    </button>
+                </form>
+
+            {% else %}
+
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
+                        <i class="fa-solid fa-user-lock"></i>
+                    </div>
+
+                    <div>
+                        <p class="text-sm font-semibold">Invitado</p>
+                        <p class="text-xs text-gray-400">Sesión no iniciada</p>
+                    </div>
                 </div>
-            </div>
+
+            {% endif %}
         </div>
     </aside>
 
@@ -216,18 +288,20 @@
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                     <p class="text-sm text-gray-500">
-                        CHAMPMANAGER / Administración
+                        Ligas Deportivas del Maule / Gestión
                     </p>
                     <h2 class="text-2xl font-extrabold text-gray-900 mt-1">
                         Campeonatos
                     </h2>
                 </div>
 
-                <a href="{% url 'crear_campeonato' %}"
-                   class="btn-primary inline-flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-plus"></i>
-                    Nuevo campeonato
-                </a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'crear_campeonato' %}"
+                       class="btn-primary inline-flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-plus"></i>
+                        Nuevo campeonato
+                    </a>
+                {% endif %}
             </div>
         </header>
 
@@ -255,7 +329,7 @@
                 </div>
             </section>
 
-            <!-- MENSAJES -->
+            <!-- MENSAJES DE DJANGO -->
             {% if messages %}
                 <section class="space-y-2">
                     {% for message in messages %}
@@ -324,7 +398,7 @@
                 </div>
             </section>
 
-            <!-- LISTADO -->
+            <!-- LISTADO DE CAMPEONATOS -->
             <section class="panel overflow-hidden">
 
                 <div class="p-5 md:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -353,7 +427,9 @@
                                 <th class="px-5 py-4 font-semibold">Término</th>
                                 <th class="px-5 py-4 font-semibold">Estado</th>
                                 <th class="px-5 py-4 font-semibold">Equipos</th>
-                                <th class="px-5 py-4 font-semibold">Acciones</th>
+                                {% if user.is_authenticated %}
+                                    <th class="px-5 py-4 font-semibold">Acciones</th>
+                                {% endif %}
                             </tr>
                         </thead>
 
@@ -405,32 +481,34 @@
                                         {{ campeonato.total_equipos|default:0 }}
                                     </td>
 
-                                    <td class="px-5 py-4">
-                                        <div class="flex flex-wrap items-center gap-2">
+                                    {% if user.is_authenticated %}
+                                        <td class="px-5 py-4">
+                                            <div class="flex flex-wrap items-center gap-2">
 
-                                            <a href="{% url 'editar_campeonato' campeonato.pk %}"
-                                               class="btn-edit">
-                                                <i class="fa-solid fa-pen-to-square"></i>
-                                                Editar
-                                            </a>
+                                                <a href="{% url 'editar_campeonato' campeonato.pk %}"
+                                                   class="btn-edit">
+                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                    Editar
+                                                </a>
 
-                                            <form method="post"
-                                                  action="{% url 'eliminar_campeonato' campeonato.pk %}"
-                                                  onsubmit="return confirmarEliminacion(this);">
-                                                {% csrf_token %}
+                                                <form method="post"
+                                                      action="{% url 'eliminar_campeonato' campeonato.pk %}"
+                                                      onsubmit="return confirmarEliminacion(this);">
+                                                    {% csrf_token %}
 
-                                                <input type="hidden"
-                                                       name="nombre_campeonato"
-                                                       value="{{ campeonato.nombre }}">
+                                                    <input type="hidden"
+                                                           name="nombre_campeonato"
+                                                           value="{{ campeonato.nombre }}">
 
-                                                <button type="submit" class="btn-delete">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                    Eliminar
-                                                </button>
-                                            </form>
+                                                    <button type="submit" class="btn-delete">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                        Eliminar
+                                                    </button>
+                                                </form>
 
-                                        </div>
-                                    </td>
+                                            </div>
+                                        </td>
+                                    {% endif %}
 
                                 </tr>
                             {% empty %}
@@ -445,11 +523,13 @@
                                         <p class="text-sm text-gray-500 mt-1">
                                             Registra el primero con el botón Nuevo campeonato.
                                         </p>
-                                        <a href="{% url 'crear_campeonato' %}"
-                                           class="btn-primary inline-flex items-center gap-2 mt-5">
-                                            <i class="fa-solid fa-plus"></i>
-                                            Crear campeonato
-                                        </a>
+                                        {% if user.is_authenticated %}
+                                            <a href="{% url 'crear_campeonato' %}"
+                                               class="btn-primary inline-flex items-center gap-2 mt-5">
+                                                <i class="fa-solid fa-plus"></i>
+                                                Crear campeonato
+                                            </a>
+                                        {% endif %}
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -479,7 +559,7 @@
                 </div>
             </section>
 
-            <!-- PIE -->
+            <!-- PIE DE PÁGINA -->
             <footer class="border-t border-gray-200 pt-6 pb-2">
                 <div class="flex flex-col sm:flex-row justify-between gap-3 text-sm text-gray-500">
                     <p>
@@ -514,7 +594,9 @@
             }
         });
 
-        contador.textContent = visibles;
+        if (contador) {
+            contador.textContent = visibles;
+        }
 
         if (mensajeSinResultados) {
             mensajeSinResultados.style.display =
@@ -522,7 +604,9 @@
         }
     }
 
-    buscador.addEventListener('input', filtrarCampeonatos);
+    if (buscador) {
+        buscador.addEventListener('input', filtrarCampeonatos);
+    }
 
     // Confirmación antes de eliminar.
     function confirmarEliminacion(formulario) {

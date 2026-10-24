@@ -11,6 +11,14 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_POST
+from django.contrib.auth import login, get_user_model
+from django.contrib.auth.forms import AuthenticationForm
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.views.decorators.cache import never_cache
+
+
+User = get_user_model()
 
 from .models import (
     Campeonato,
@@ -577,6 +585,7 @@ def crear_estadistica(request):
     """Registra las estadísticas de un jugador en un partido."""
 
     contexto = {
+        "campeonatos": Campeonato.objects.order_by("nombre"),  # <-- ¡Añadido aquí!
         "jugadores": Jugador.objects.order_by("apellido", "nombre"),
         "partidos": (
             Partido.objects
@@ -603,6 +612,44 @@ def crear_estadistica(request):
         "crear_estadistica.html",
         contexto,
         "estadisticas",
+    )
+
+
+def editar_estadistica(request, pk):
+    """Actualiza las estadísticas de un jugador."""
+
+    estadistica = get_object_or_404(Estadistica, pk=pk)
+
+    contexto = {
+        "campeonatos": Campeonato.objects.order_by("nombre"),  # <-- ¡Añadido aquí también!
+        "jugadores": Jugador.objects.order_by("apellido", "nombre"),
+        "partidos": (
+            Partido.objects
+            .select_related(
+                "equipo_local",
+                "equipo_visitante",
+                "id_campeonato",
+            )
+            .order_by("-fecha", "-hora")
+        ),
+        "estadistica": estadistica,
+    }
+
+    return _guardar_modelo(
+        request,
+        Estadistica,
+        [
+            "id_partido",
+            "id_jugador",
+            "goles",
+            "asistencias",
+            "tarjetas_amarillas",
+            "tarjetas_rojas",
+        ],
+        "editar_estadistica.html",
+        contexto,
+        "estadisticas",
+        instancia=estadistica,
     )
 
 
@@ -883,13 +930,15 @@ def eliminar_sancion(request, pk):
 @admin_required
 @never_cache
 def panel_admin(request):
-    """Dashboard personalizado para administradores."""
+    """Panel administrativo con resumen y próximos partidos."""
 
+    # Totales generales
     total_campeonatos = Campeonato.objects.count()
     total_equipos = Equipo.objects.count()
     total_jugadores = Jugador.objects.count()
     total_partidos = Partido.objects.count()
 
+    # Estadísticas generales
     resumen = Estadistica.objects.aggregate(
         total_goles=Sum("goles"),
         total_asistencias=Sum("asistencias"),
@@ -902,6 +951,7 @@ def panel_admin(request):
     total_amarillas = resumen["total_amarillas"] or 0
     total_rojas = resumen["total_rojas"] or 0
 
+    # Últimos partidos registrados
     ultimos_partidos = (
         Partido.objects
         .select_related(
@@ -912,6 +962,7 @@ def panel_admin(request):
         .order_by("-fecha", "-hora")[:6]
     )
 
+    # Próximos partidos: desde hoy en adelante
     hoy = timezone.localdate()
 
     proximos_partidos = (
@@ -925,6 +976,7 @@ def panel_admin(request):
         .order_by("fecha", "hora")[:5]
     )
 
+    # Máximos goleadores
     goleadores = (
         Estadistica.objects
         .values(
@@ -937,17 +989,20 @@ def panel_admin(request):
         .order_by("-total_goles", "id_jugador__apellido")[:5]
     )
 
+    # Equipos con más jugadores
     equipos_destacados = (
         Equipo.objects
         .annotate(total_jugadores=Count("jugador"))
         .order_by("-total_jugadores", "nombre")[:5]
     )
 
+    # Campeonatos recientes
     campeonatos_recientes = (
         Campeonato.objects
         .order_by("-fecha_inicio")[:5]
     )
 
+    # Alertas del sistema
     alertas = []
 
     if total_campeonatos == 0:
@@ -998,6 +1053,7 @@ def panel_admin(request):
             "accion": "Crear partido",
         })
 
+    # Datos que se envían a la plantilla HTML
     contexto = {
         "total_campeonatos": total_campeonatos,
         "total_equipos": total_equipos,
@@ -1025,17 +1081,25 @@ def panel_admin(request):
 
 @never_cache
 def iniciar_sesion(request):
-    """Autentica usuarios y redirige según sus permisos."""
-
     if request.user.is_authenticated:
         if request.user.is_staff:
             return redirect("panel_admin")
         return redirect("index")
 
-    formulario = AuthenticationForm(
-        request,
-        data=request.POST or None,
-    )
+    datos = request.POST.copy() if request.method == "POST" else None
+
+    if request.method == "POST":
+        identificador = request.POST.get("username", "").strip()
+
+        if "@" in identificador:
+            usuario = User.objects.filter(
+                email__iexact=identificador
+            ).first()
+
+            if usuario:
+                datos["username"] = usuario.get_username()
+
+    formulario = AuthenticationForm(request, data=datos)
 
     if request.method == "POST" and formulario.is_valid():
         usuario = formulario.get_user()
@@ -1043,7 +1107,7 @@ def iniciar_sesion(request):
 
         messages.success(
             request,
-            f"Bienvenido, {usuario.username}.",
+            f"Bienvenido, {usuario.username}."
         )
 
         if usuario.is_staff:
@@ -1051,12 +1115,9 @@ def iniciar_sesion(request):
 
         return redirect("index")
 
-    return render(
-        request,
-        "iniciarsesion.html",
-        {"form": formulario},
-    )
-
+    return render(request, "iniciarsesion.html", {
+        "form": formulario,
+    })
 
 # =========================================================
 # AUTENTICACIÓN: REGISTRARSE
@@ -1064,7 +1125,7 @@ def iniciar_sesion(request):
 
 @never_cache
 def registrarse(request):
-    """Crea una cuenta nueva para un usuario normal."""
+    """Crea una cuenta nueva de delegado."""
 
     if request.user.is_authenticated:
         if request.user.is_staff:
@@ -1074,16 +1135,48 @@ def registrarse(request):
     formulario = UserCreationForm(request.POST or None)
 
     if request.method == "POST" and formulario.is_valid():
+        correo = request.POST.get("email", "").strip()
+
+        if not correo:
+            messages.error(
+                request,
+                "Debes ingresar un correo electrónico.",
+            )
+            return render(
+                request,
+                "registrarse.html",
+                {"form": formulario},
+            )
+
+        if User.objects.filter(email__iexact=correo).exists():
+            messages.error(
+                request,
+                "Este correo electrónico ya está registrado.",
+            )
+            return render(
+                request,
+                "registrarse.html",
+                {"form": formulario},
+            )
+
         try:
             with transaction.atomic():
                 usuario = formulario.save(commit=False)
 
-                # Las cuentas registradas desde el formulario
-                # no obtienen privilegios administrativos.
+                usuario.email = correo
                 usuario.is_staff = False
                 usuario.is_superuser = False
                 usuario.is_active = True
                 usuario.save()
+
+                # Crear el perfil si tu proyecto utiliza PerfilUsuario.
+                # Descomenta estas líneas si el modelo y la tabla ya existen.
+                #
+                # from .models import PerfilUsuario
+                # PerfilUsuario.objects.get_or_create(
+                #     usuario=usuario,
+                #     defaults={"rol": "delegado"},
+                # )
 
             login(request, usuario)
 
@@ -1097,7 +1190,7 @@ def registrarse(request):
         except IntegrityError:
             messages.error(
                 request,
-                "No se pudo crear la cuenta. Inténtalo nuevamente.",
+                "No se pudo crear la cuenta. Comprueba los datos e inténtalo nuevamente.",
             )
 
     return render(
@@ -1105,7 +1198,6 @@ def registrarse(request):
         "registrarse.html",
         {"form": formulario},
     )
-
 
 # =========================================================
 # AUTENTICACIÓN: CERRAR SESIÓN

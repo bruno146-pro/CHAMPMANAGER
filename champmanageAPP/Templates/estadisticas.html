@@ -209,11 +209,11 @@
 
 <div class="min-h-screen md:flex">
 
-    <!-- BARRA LATERAL: MISMO DISEÑO QUE JUGADORES.HTML -->
+    <!-- BARRA LATERAL DINÁMICA -->
     <aside class="sidebar text-white w-full md:w-64 md:min-h-screen md:fixed md:inset-y-0 md:left-0 z-20">
 
         <div class="px-6 py-6 border-b border-gray-700">
-            <div class="flex items-center gap-3">
+            <a href="{% url 'index' %}" class="flex items-center gap-3">
                 <div class="w-11 h-11 rounded-xl bg-red-600 flex items-center justify-center">
                     <i class="fa-solid fa-trophy text-xl"></i>
                 </div>
@@ -226,7 +226,7 @@
                         Ligas Deportivas del Maule
                     </p>
                 </div>
-            </div>
+            </a>
         </div>
 
         <nav class="p-4 space-y-2">
@@ -236,64 +236,134 @@
             </p>
 
             <a href="{% url 'index' %}" class="nav-link">
-                <i class="fa-solid fa-chart-pie w-5"></i>
-                Panel principal
+                <i class="fa-solid fa-house w-5"></i>
+                Inicio
             </a>
 
-            <a href="{% url 'campeonatos' %}" class="nav-link">
-                <i class="fa-solid fa-trophy w-5"></i>
-                Campeonatos
-            </a>
+            {% if user.is_authenticated %}
 
-            <a href="{% url 'equipos' %}" class="nav-link">
-                <i class="fa-solid fa-shield-halved w-5"></i>
-                Equipos
-            </a>
-
-            <a href="{% url 'jugadores' %}" class="nav-link">
-                <i class="fa-solid fa-users w-5"></i>
-                Jugadores
-            </a>
-
-            <a href="{% url 'partidos' %}" class="nav-link">
-                <i class="fa-solid fa-futbol w-5"></i>
-                Partidos
-            </a>
-
-            <a href="{% url 'estadisticas' %}" class="nav-link active" aria-current="page">
-                <i class="fa-solid fa-chart-column w-5"></i>
-                Estadísticas
-            </a>
-
-            <a href="{% url 'sanciones' %}" class="nav-link">
-                <i class="fa-solid fa-rectangle-list w-5"></i>
-                Sanciones
-            </a>
-
-            <div class="pt-5">
-                <p class="text-xs uppercase tracking-widest text-gray-500 px-3 py-2">
-                    Administración
-                </p>
-
-                <a href="/admin/" class="nav-link">
-                    <i class="fa-solid fa-gear w-5"></i>
-                    Administrar sistema
+                <a href="{% url 'campeonatos' %}" class="nav-link">
+                    <i class="fa-solid fa-trophy w-5"></i>
+                    Campeonatos
                 </a>
-            </div>
+
+                <a href="{% url 'equipos' %}" class="nav-link">
+                    <i class="fa-solid fa-shield-halved w-5"></i>
+                    Equipos
+                </a>
+
+                <a href="{% url 'jugadores' %}" class="nav-link">
+                    <i class="fa-solid fa-users w-5"></i>
+                    Jugadores
+                </a>
+
+                <a href="{% url 'partidos' %}" class="nav-link">
+                    <i class="fa-solid fa-futbol w-5"></i>
+                    Partidos
+                </a>
+
+                <a href="{% url 'estadisticas' %}" class="nav-link active" aria-current="page">
+                    <i class="fa-solid fa-chart-column w-5"></i>
+                    Estadísticas
+                </a>
+
+                <a href="{% url 'sanciones' %}" class="nav-link">
+                    <i class="fa-solid fa-rectangle-list w-5"></i>
+                    Sanciones
+                </a>
+
+            {% else %}
+
+                <div class="mt-3 rounded-xl border border-gray-700 bg-gray-800 p-4">
+                    <i class="fa-solid fa-lock text-red-400"></i>
+
+                    <p class="mt-2 text-sm font-semibold text-white">
+                        Módulos bloqueados
+                    </p>
+
+                    <p class="mt-1 text-xs leading-5 text-gray-400">
+                        Inicia sesión para utilizar los módulos del sistema.
+                    </p>
+
+                    <a href="{% url 'login' %}"
+                       class="mt-3 block rounded-lg bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-red-700">
+                        <i class="fa-solid fa-right-to-bracket mr-1"></i>
+                        Iniciar sesión
+                    </a>
+
+                    <a href="{% url 'registrarse' %}"
+                       class="mt-2 block rounded-lg border border-gray-600 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-gray-700">
+                        <i class="fa-solid fa-user-plus mr-1"></i>
+                        Crear cuenta
+                    </a>
+                </div>
+
+            {% endif %}
+
+            {% if user.is_authenticated and user.is_staff %}
+                <div class="pt-5">
+                    <p class="text-xs uppercase tracking-widest text-gray-500 px-3 py-2">
+                        Administración
+                    </p>
+
+                    <a href="{% url 'admin_panel' %}" class="nav-link">
+                        <i class="fa-solid fa-gear w-5"></i>
+                        Administrar sistema
+                    </a>
+                </div>
+            {% endif %}
 
         </nav>
 
+        <!-- USUARIO Y CIERRE DE SESIÓN DINÁMICO -->
         <div class="px-5 py-5 mt-2 border-t border-gray-700">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
-                    <i class="fa-solid fa-user"></i>
+            {% if user.is_authenticated %}
+
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+
+                    <div class="min-w-0">
+                        <p class="text-sm font-semibold truncate">
+                            {{ user.get_full_name|default:user.username }}
+                        </p>
+
+                        <p class="text-xs text-gray-400">
+                            {% if user.is_superuser %}
+                                Superadministrador
+                            {% elif user.is_staff %}
+                                Administrador
+                            {% else %}
+                                Delegado
+                            {% endif %}
+                        </p>
+                    </div>
                 </div>
 
-                <div>
-                    <p class="text-sm font-semibold">Administrador</p>
-                    <p class="text-xs text-gray-400">CHAMPMANAGER</p>
+                <form method="post" action="{% url 'logout' %}" class="mt-4">
+                    {% csrf_token %}
+                    <button type="submit"
+                            class="w-full rounded-lg border border-gray-700 px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white">
+                        <i class="fa-solid fa-right-from-bracket mr-2"></i>
+                        Cerrar sesión
+                    </button>
+                </form>
+
+            {% else %}
+
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
+                        <i class="fa-solid fa-user-lock"></i>
+                    </div>
+
+                    <div>
+                        <p class="text-sm font-semibold">Invitado</p>
+                        <p class="text-xs text-gray-400">Sesión no iniciada</p>
+                    </div>
                 </div>
-            </div>
+
+            {% endif %}
         </div>
 
     </aside>
@@ -325,10 +395,12 @@
                         <p class="text-xs text-gray-500">Estadísticas deportivas</p>
                     </div>
 
-                    <a href="{% url 'crear_estadistica' %}" class="primary-btn">
-                        <i class="fa-solid fa-plus"></i>
-                        Registrar estadísticas
-                    </a>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'crear_estadistica' %}" class="primary-btn">
+                            <i class="fa-solid fa-plus"></i>
+                            Registrar estadísticas
+                        </a>
+                    {% endif %}
                 </div>
 
             </div>
@@ -488,7 +560,9 @@
                                 <th class="px-5 py-4 font-semibold">Fecha</th>
                                 <th class="px-5 py-4 font-semibold text-center">Goles</th>
                                 <th class="px-5 py-4 font-semibold text-center">Asistencias</th>
-                                <th class="px-5 py-4 font-semibold">Acciones</th>
+                                {% if user.is_authenticated %}
+                                    <th class="px-5 py-4 font-semibold">Acciones</th>
+                                {% endif %}
                             </tr>
                         </thead>
 
@@ -578,32 +652,34 @@
                                     </td>
 
                                     <!-- ACCIONES -->
-                                    <td class="px-5 py-4">
-                                        <div class="flex items-center gap-2">
+                                    {% if user.is_authenticated %}
+                                        <td class="px-5 py-4">
+                                            <div class="flex items-center gap-2">
 
-                                            <a
-                                                href="{% url 'editar_estadistica' e.id_estadistica %}"
-                                                class="action-btn btn-edit">
-                                                <i class="fa-solid fa-pen-to-square"></i>
-                                                Editar
-                                            </a>
+                                                <a
+                                                    href="{% url 'editar_estadistica' e.id_estadistica %}"
+                                                    class="action-btn btn-edit">
+                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                    Editar
+                                                </a>
 
-                                            <form
-                                                method="post"
-                                                action="{% url 'eliminar_estadistica' e.id_estadistica %}"
-                                                onsubmit="return confirm('¿Estás seguro de que deseas eliminar este registro de estadísticas? Esta acción no se puede deshacer.');">
+                                                <form
+                                                    method="post"
+                                                    action="{% url 'eliminar_estadistica' e.id_estadistica %}"
+                                                    onsubmit="return confirm('¿Estás seguro de que deseas eliminar este registro de estadísticas? Esta acción no se puede deshacer.');">
 
-                                                {% csrf_token %}
+                                                    {% csrf_token %}
 
-                                                <button type="submit" class="action-btn btn-delete">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                    Eliminar
-                                                </button>
+                                                    <button type="submit" class="action-btn btn-delete">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                        Eliminar
+                                                    </button>
 
-                                            </form>
+                                                </form>
 
-                                        </div>
-                                    </td>
+                                            </div>
+                                        </td>
+                                    {% endif %}
 
                                 </tr>
 
@@ -624,11 +700,13 @@
                                             Registra las estadísticas de un jugador para comenzar a consultar su rendimiento.
                                         </p>
 
-                                        <a href="{% url 'crear_estadistica' %}"
-                                           class="primary-btn mt-5">
-                                            <i class="fa-solid fa-plus"></i>
-                                            Registrar estadísticas
-                                        </a>
+                                        {% if user.is_authenticated %}
+                                            <a href="{% url 'crear_estadistica' %}"
+                                               class="primary-btn mt-5">
+                                                <i class="fa-solid fa-plus"></i>
+                                                Registrar estadísticas
+                                            </a>
+                                        {% endif %}
 
                                     </td>
                                 </tr>
@@ -685,43 +763,48 @@
 <script>
     const campoBusqueda = document.getElementById("busqueda");
     const tabla = document.getElementById("tablaEstadisticas");
-    const filas = Array.from(
-        tabla.querySelectorAll("tbody tr")
-    ).filter(fila => fila.id !== "filaVacia");
+    
+    if (tabla) {
+        const filas = Array.from(
+            tabla.querySelectorAll("tbody tr")
+        ).filter(fila => fila.id !== "filaVacia");
 
-    const filaVacia = document.getElementById("filaVacia");
-    const sinResultados = document.getElementById("sinResultados");
-    const contador = document.getElementById("contadorResultados");
+        const filaVacia = document.getElementById("filaVacia");
+        const sinResultados = document.getElementById("sinResultados");
+        const contador = document.getElementById("contadorResultados");
 
-    function actualizarTabla() {
-        const texto = campoBusqueda.value.toLowerCase().trim();
-        let encontrados = 0;
+        function actualizarTabla() {
+            const texto = campoBusqueda.value.toLowerCase().trim();
+            let encontrados = 0;
 
-        filas.forEach(function (fila) {
-            const coincide = fila.textContent.toLowerCase().includes(texto);
+            filas.forEach(function (fila) {
+                const coincide = fila.textContent.toLowerCase().includes(texto);
 
-            fila.hidden = !coincide;
+                fila.hidden = !coincide;
 
-            if (coincide) {
-                encontrados++;
+                if (coincide) {
+                    encontrados++;
+                }
+            });
+
+            if (filaVacia) {
+                sinResultados.hidden = true;
+                contador.textContent = "No hay estadísticas registradas.";
+                return;
             }
-        });
 
-        if (filaVacia) {
-            sinResultados.hidden = true;
-            contador.textContent = "No hay estadísticas registradas.";
-            return;
+            sinResultados.hidden = texto === "" || encontrados > 0;
+
+            contador.textContent = texto
+                ? `Resultados encontrados: ${encontrados}`
+                : `Registros de estadísticas: ${filas.length}`;
         }
 
-        sinResultados.hidden = texto === "" || encontrados > 0;
-
-        contador.textContent = texto
-            ? `Resultados encontrados: ${encontrados}`
-            : `Registros de estadísticas: ${filas.length}`;
+        if (campoBusqueda) {
+            campoBusqueda.addEventListener("input", actualizarTabla);
+            actualizarTabla();
+        }
     }
-
-    campoBusqueda.addEventListener("input", actualizarTabla);
-    actualizarTabla();
 </script>
 
 </body>

@@ -255,7 +255,7 @@
 
 <div class="min-h-screen md:flex">
 
-    <!-- BARRA LATERAL -->
+    <!-- BARRA LATERAL DINÁMICA -->
     <aside class="sidebar text-white w-full md:w-64 md:min-h-screen md:fixed md:inset-y-0 md:left-0 z-20">
 
         <div class="px-6 py-6 border-b border-gray-700">
@@ -282,64 +282,134 @@
             </p>
 
             <a href="{% url 'index' %}" class="nav-link">
-                <i class="fa-solid fa-chart-pie w-5"></i>
-                Panel principal
+                <i class="fa-solid fa-house w-5"></i>
+                Inicio
             </a>
 
-            <a href="{% url 'campeonatos' %}" class="nav-link">
-                <i class="fa-solid fa-trophy w-5"></i>
-                Campeonatos
-            </a>
+            {% if user.is_authenticated %}
 
-            <a href="{% url 'equipos' %}" class="nav-link">
-                <i class="fa-solid fa-shield-halved w-5"></i>
-                Equipos
-            </a>
-
-            <a href="{% url 'jugadores' %}" class="nav-link">
-                <i class="fa-solid fa-users w-5"></i>
-                Jugadores
-            </a>
-
-            <a href="{% url 'partidos' %}" class="nav-link">
-                <i class="fa-solid fa-futbol w-5"></i>
-                Partidos
-            </a>
-
-            <a href="{% url 'estadisticas' %}" class="nav-link">
-                <i class="fa-solid fa-chart-column w-5"></i>
-                Estadísticas
-            </a>
-
-            <a href="{% url 'sanciones' %}" class="nav-link active" aria-current="page">
-                <i class="fa-solid fa-rectangle-list w-5"></i>
-                Sanciones
-            </a>
-
-            <div class="pt-5">
-                <p class="text-xs uppercase tracking-widest text-gray-500 px-3 py-2">
-                    Administración
-                </p>
-
-                <a href="/admin/" class="nav-link">
-                    <i class="fa-solid fa-gear w-5"></i>
-                    Administrar sistema
+                <a href="{% url 'campeonatos' %}" class="nav-link">
+                    <i class="fa-solid fa-trophy w-5"></i>
+                    Campeonatos
                 </a>
-            </div>
+
+                <a href="{% url 'equipos' %}" class="nav-link">
+                    <i class="fa-solid fa-shield-halved w-5"></i>
+                    Equipos
+                </a>
+
+                <a href="{% url 'jugadores' %}" class="nav-link">
+                    <i class="fa-solid fa-users w-5"></i>
+                    Jugadores
+                </a>
+
+                <a href="{% url 'partidos' %}" class="nav-link">
+                    <i class="fa-solid fa-futbol w-5"></i>
+                    Partidos
+                </a>
+
+                <a href="{% url 'estadisticas' %}" class="nav-link">
+                    <i class="fa-solid fa-chart-column w-5"></i>
+                    Estadísticas
+                </a>
+
+                <a href="{% url 'sanciones' %}" class="nav-link active" aria-current="page">
+                    <i class="fa-solid fa-rectangle-list w-5"></i>
+                    Sanciones
+                </a>
+
+            {% else %}
+
+                <div class="mt-3 rounded-xl border border-gray-700 bg-gray-800 p-4">
+                    <i class="fa-solid fa-lock text-red-400"></i>
+
+                    <p class="mt-2 text-sm font-semibold text-white">
+                        Módulos bloqueados
+                    </p>
+
+                    <p class="mt-1 text-xs leading-5 text-gray-400">
+                        Inicia sesión para utilizar los módulos del sistema.
+                    </p>
+
+                    <a href="{% url 'login' %}"
+                       class="mt-3 block rounded-lg bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-red-700">
+                        <i class="fa-solid fa-right-to-bracket mr-1"></i>
+                        Iniciar sesión
+                    </a>
+
+                    <a href="{% url 'registrarse' %}"
+                       class="mt-2 block rounded-lg border border-gray-600 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-gray-700">
+                        <i class="fa-solid fa-user-plus mr-1"></i>
+                        Crear cuenta
+                    </a>
+                </div>
+
+            {% endif %}
+
+            {% if user.is_authenticated and user.is_staff %}
+                <div class="pt-5">
+                    <p class="text-xs uppercase tracking-widest text-gray-500 px-3 py-2">
+                        Administración
+                    </p>
+
+                    <a href="{% url 'admin_panel' %}" class="nav-link">
+                        <i class="fa-solid fa-gear w-5"></i>
+                        Administrar sistema
+                    </a>
+                </div>
+            {% endif %}
 
         </nav>
 
+        <!-- USUARIO Y CIERRE DE SESIÓN DINÁMICO -->
         <div class="px-5 py-5 mt-2 border-t border-gray-700">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
-                    <i class="fa-solid fa-user"></i>
+            {% if user.is_authenticated %}
+
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+
+                    <div class="min-w-0">
+                        <p class="text-sm font-semibold truncate">
+                            {{ user.get_full_name|default:user.username }}
+                        </p>
+
+                        <p class="text-xs text-gray-400">
+                            {% if user.is_superuser %}
+                                Superadministrador
+                            {% elif user.is_staff %}
+                                Administrador
+                            {% else %}
+                                Delegado
+                            {% endif %}
+                        </p>
+                    </div>
                 </div>
 
-                <div>
-                    <p class="text-sm font-semibold">Administrador</p>
-                    <p class="text-xs text-gray-400">CHAMPMANAGER</p>
+                <form method="post" action="{% url 'logout' %}" class="mt-4">
+                    {% csrf_token %}
+                    <button type="submit"
+                            class="w-full rounded-lg border border-gray-700 px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white">
+                        <i class="fa-solid fa-right-from-bracket mr-2"></i>
+                        Cerrar sesión
+                    </button>
+                </form>
+
+            {% else %}
+
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
+                        <i class="fa-solid fa-user-lock"></i>
+                    </div>
+
+                    <div>
+                        <p class="text-sm font-semibold">Invitado</p>
+                        <p class="text-xs text-gray-400">Sesión no iniciada</p>
+                    </div>
                 </div>
-            </div>
+
+            {% endif %}
         </div>
 
     </aside>
@@ -493,170 +563,172 @@
                 </div>
             </section>
 
-            <!-- FORMULARIO PARA REGISTRAR SANCIONES -->
-            <section class="section-card overflow-hidden">
+            <!-- FORMULARIO PARA REGISTRAR SANCIONES (CONDICIONADO A AUTENTICACIÓN) -->
+            {% if user.is_authenticated %}
+                <section class="section-card overflow-hidden">
 
-                <div class="p-5 md:p-6 border-b border-gray-100">
-                    <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-xl bg-red-50 text-red-600 flex items-center justify-center text-lg">
-                            <i class="fa-solid fa-clipboard-check"></i>
-                        </div>
+                    <div class="p-5 md:p-6 border-b border-gray-100">
+                        <div class="flex items-center gap-3">
+                            <div class="w-11 h-11 rounded-xl bg-red-50 text-red-600 flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-clipboard-check"></i>
+                            </div>
 
-                        <div>
-                            <h3 class="text-lg font-bold">
-                                Registrar sanción
-                            </h3>
-                            <p class="text-sm text-gray-500 mt-1">
-                                Registra las tarjetas recibidas por un jugador durante un partido.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <form method="post" action="{% url 'registrar_sancion' %}" class="p-5 md:p-6">
-                    {% csrf_token %}
-
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-
-                        <!-- PARTIDO -->
-                        <div>
-                            <label for="id_partido"
-                                   class="block mb-2 text-sm font-semibold text-gray-700">
-                                <i class="fa-solid fa-futbol text-gray-400 mr-1"></i>
-                                Partido
-                            </label>
-
-                            <select name="id_partido" id="id_partido"
-                                    class="field" required>
-                                <option value="">Seleccionar partido...</option>
-
-                                {% for partido in partidos %}
-                                    <option value="{{ partido.pk }}"
-                                            data-local="{{ partido.equipo_local_id }}"
-                                            data-visitante="{{ partido.equipo_visitante_id }}">
-                                        {{ partido.fecha|date:"d/m/Y" }}
-                                        {% if partido.hora %}
-                                            - {{ partido.hora|time:"H:i" }}
-                                        {% endif %}
-                                        | {{ partido.equipo_local.nombre }}
-                                        vs. {{ partido.equipo_visitante.nombre }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-
-                            {% if not partidos %}
-                                <p class="text-xs text-red-600 mt-2">
-                                    <i class="fa-solid fa-circle-exclamation mr-1"></i>
-                                    Primero debes registrar un partido.
+                            <div>
+                                <h3 class="text-lg font-bold">
+                                    Registrar sanción
+                                </h3>
+                                <p class="text-sm text-gray-500 mt-1">
+                                    Registra las tarjetas recibidas por un jugador durante un partido.
                                 </p>
-                            {% endif %}
+                            </div>
                         </div>
-
-                        <!-- JUGADOR -->
-                        <div>
-                            <label for="id_jugador"
-                                   class="block mb-2 text-sm font-semibold text-gray-700">
-                                <i class="fa-solid fa-user text-gray-400 mr-1"></i>
-                                Jugador sancionado
-                            </label>
-
-                            <select name="id_jugador" id="id_jugador"
-                                    class="field" required disabled>
-                                <option value="">Selecciona primero un partido</option>
-
-                                {% for jugador in jugadores %}
-                                    <option value="{{ jugador.pk }}"
-                                            data-equipo="{{ jugador.id_equipo_id }}">
-                                        {{ jugador.nombre }} {{ jugador.apellido }}
-                                        - {{ jugador.id_equipo.nombre }}
-                                        {% if jugador.numero_camiseta %}
-                                            - N.º {{ jugador.numero_camiseta }}
-                                        {% endif %}
-                                    </option>
-                                {% endfor %}
-                            </select>
-
-                            <p id="mensaje-jugadores" class="text-xs text-gray-500 mt-2">
-                                Se mostrarán los jugadores de los equipos participantes.
-                            </p>
-                        </div>
-
-                        <!-- TARJETAS AMARILLAS -->
-                        <div>
-                            <label for="tarjetas_amarillas"
-                                   class="block mb-2 text-sm font-semibold text-gray-700">
-                                <i class="fa-solid fa-square text-amber-400 mr-1"></i>
-                                Tarjetas amarillas
-                            </label>
-
-                            <input type="number"
-                                   name="tarjetas_amarillas"
-                                   id="tarjetas_amarillas"
-                                   class="field"
-                                   min="0"
-                                   max="20"
-                                   value="0"
-                                   required>
-
-                            <p class="text-xs text-gray-500 mt-2">
-                                Cantidad de amonestaciones del jugador.
-                            </p>
-                        </div>
-
-                        <!-- TARJETAS ROJAS -->
-                        <div>
-                            <label for="tarjetas_rojas"
-                                   class="block mb-2 text-sm font-semibold text-gray-700">
-                                <i class="fa-solid fa-square text-red-500 mr-1"></i>
-                                Tarjetas rojas
-                            </label>
-
-                            <input type="number"
-                                   name="tarjetas_rojas"
-                                   id="tarjetas_rojas"
-                                   class="field"
-                                   min="0"
-                                   max="10"
-                                   value="0"
-                                   required>
-
-                            <p class="text-xs text-gray-500 mt-2">
-                                Cantidad de expulsiones del jugador.
-                            </p>
-                        </div>
-
                     </div>
 
-                    <!-- AVISO DE AMARILLAS -->
-                    <div id="aviso-doble-amarilla"
-                         class="message warning mt-5"
-                         hidden>
-                        <i class="fa-solid fa-triangle-exclamation mr-2"></i>
-                        Atención: se indicaron dos o más tarjetas amarillas.
-                        Verifica que la cantidad sea correcta.
-                    </div>
+                    <form method="post" action="{% url 'registrar_sancion' %}" class="p-5 md:p-6">
+                        {% csrf_token %}
 
-                    <!-- BOTONES -->
-                    <div class="flex flex-wrap gap-3 mt-6 pt-5 border-t border-gray-100">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
-                        <button type="submit"
-                                id="btn-guardar"
-                                class="primary-btn"
-                                disabled>
-                            <i class="fa-solid fa-floppy-disk"></i>
-                            Registrar sanción
-                        </button>
+                            <!-- PARTIDO -->
+                            <div>
+                                <label for="id_partido"
+                                       class="block mb-2 text-sm font-semibold text-gray-700">
+                                    <i class="fa-solid fa-futbol text-gray-400 mr-1"></i>
+                                    Partido
+                                </label>
 
-                        <button type="reset"
-                                id="btn-limpiar"
-                                class="secondary-btn">
-                            <i class="fa-solid fa-rotate-left"></i>
-                            Limpiar formulario
-                        </button>
+                                <select name="id_partido" id="id_partido"
+                                        class="field" required>
+                                    <option value="">Seleccionar partido...</option>
 
-                    </div>
-                </form>
-            </section>
+                                    {% for partido in partidos %}
+                                        <option value="{{ partido.pk }}"
+                                                data-local="{{ partido.equipo_local_id }}"
+                                                data-visitante="{{ partido.equipo_visitante_id }}">
+                                            {{ partido.fecha|date:"d/m/Y" }}
+                                            {% if partido.hora %}
+                                                - {{ partido.hora|time:"H:i" }}
+                                            {% endif %}
+                                            | {{ partido.equipo_local.nombre }}
+                                            vs. {{ partido.equipo_visitante.nombre }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                {% if not partidos %}
+                                    <p class="text-xs text-red-600 mt-2">
+                                        <i class="fa-solid fa-circle-exclamation mr-1"></i>
+                                        Primero debes registrar un partido.
+                                    </p>
+                                {% endif %}
+                            </div>
+
+                            <!-- JUGADOR -->
+                            <div>
+                                <label for="id_jugador"
+                                       class="block mb-2 text-sm font-semibold text-gray-700">
+                                    <i class="fa-solid fa-user text-gray-400 mr-1"></i>
+                                    Jugador sancionado
+                                </label>
+
+                                <select name="id_jugador" id="id_jugador"
+                                        class="field" required disabled>
+                                    <option value="">Selecciona primero un partido</option>
+
+                                    {% for jugador in jugadores %}
+                                        <option value="{{ jugador.pk }}"
+                                                data-equipo="{{ jugador.id_equipo_id }}">
+                                            {{ jugador.nombre }} {{ jugador.apellido }}
+                                            - {{ jugador.id_equipo.nombre }}
+                                            {% if jugador.numero_camiseta %}
+                                                - N.º {{ jugador.numero_camiseta }}
+                                            {% endif %}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                <p id="mensaje-jugadores" class="text-xs text-gray-500 mt-2">
+                                    Se mostrarán los jugadores de los equipos participantes.
+                                </p>
+                            </div>
+
+                            <!-- TARJETAS AMARILLAS -->
+                            <div>
+                                <label for="tarjetas_amarillas"
+                                       class="block mb-2 text-sm font-semibold text-gray-700">
+                                    <i class="fa-solid fa-square text-amber-400 mr-1"></i>
+                                    Tarjetas amarillas
+                                </label>
+
+                                <input type="number"
+                                       name="tarjetas_amarillas"
+                                       id="tarjetas_amarillas"
+                                       class="field"
+                                       min="0"
+                                       max="20"
+                                       value="0"
+                                       required>
+
+                                <p class="text-xs text-gray-500 mt-2">
+                                    Cantidad de amonestaciones del jugador.
+                                </p>
+                            </div>
+
+                            <!-- TARJETAS ROJAS -->
+                            <div>
+                                <label for="tarjetas_rojas"
+                                       class="block mb-2 text-sm font-semibold text-gray-700">
+                                    <i class="fa-solid fa-square text-red-500 mr-1"></i>
+                                    Tarjetas rojas
+                                </label>
+
+                                <input type="number"
+                                       name="tarjetas_rojas"
+                                       id="tarjetas_rojas"
+                                       class="field"
+                                       min="0"
+                                       max="10"
+                                       value="0"
+                                       required>
+
+                                <p class="text-xs text-gray-500 mt-2">
+                                    Cantidad de expulsiones del jugador.
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <!-- AVISO DE AMARILLAS -->
+                        <div id="aviso-doble-amarilla"
+                             class="message warning mt-5"
+                             hidden>
+                            <i class="fa-solid fa-triangle-exclamation mr-2"></i>
+                            Atención: se indicaron dos o más tarjetas amarillas.
+                            Verifica que la cantidad sea correcta.
+                        </div>
+
+                        <!-- BOTONES -->
+                        <div class="flex flex-wrap gap-3 mt-6 pt-5 border-t border-gray-100">
+
+                            <button type="submit"
+                                    id="btn-guardar"
+                                    class="primary-btn"
+                                    disabled>
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                Registrar sanción
+                            </button>
+
+                            <button type="reset"
+                                    id="btn-limpiar"
+                                    class="secondary-btn">
+                                <i class="fa-solid fa-rotate-left"></i>
+                                Limpiar formulario
+                            </button>
+
+                        </div>
+                    </form>
+                </section>
+            {% endif %}
 
             <!-- HISTORIAL DE SANCIONES -->
             <section class="section-card overflow-hidden">
@@ -739,7 +811,9 @@
                                 <th class="px-5 py-4 font-semibold">Fecha</th>
                                 <th class="px-5 py-4 font-semibold text-center">Amarillas</th>
                                 <th class="px-5 py-4 font-semibold text-center">Rojas</th>
-                                <th class="px-5 py-4 font-semibold text-center">Acciones</th>
+                                {% if user.is_authenticated %}
+                                    <th class="px-5 py-4 font-semibold text-center">Acciones</th>
+                                {% endif %}
                             </tr>
                         </thead>
 
@@ -832,34 +906,36 @@
                                     </td>
 
                                     <!-- ACCIONES -->
-                                    <td class="px-5 py-4">
-                                        <div class="flex items-center justify-center gap-2">
+                                    {% if user.is_authenticated %}
+                                        <td class="px-5 py-4">
+                                            <div class="flex items-center justify-center gap-2">
 
-                                            <a href="{% url 'editar_sancion' sancion.pk %}"
-                                               class="action-btn btn-edit">
-                                                <i class="fa-solid fa-pen-to-square"></i>
-                                                Editar
-                                            </a>
+                                                <a href="{% url 'editar_sancion' sancion.pk %}"
+                                                   class="action-btn btn-edit">
+                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                    Editar
+                                                </a>
 
-                                            <form method="post"
-                                                  action="{% url 'eliminar_sancion' sancion.pk %}"
-                                                  onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta sanción? Esta acción no se puede deshacer.');">
-                                                {% csrf_token %}
+                                                <form method="post"
+                                                      action="{% url 'eliminar_sancion' sancion.pk %}"
+                                                      onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta sanción? Esta acción no se puede deshacer.');">
+                                                    {% csrf_token %}
 
-                                                <button type="submit" class="action-btn btn-delete">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                    Eliminar
-                                                </button>
-                                            </form>
+                                                    <button type="submit" class="action-btn btn-delete">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                        Eliminar
+                                                    </button>
+                                                </form>
 
-                                        </div>
-                                    </td>
+                                            </div>
+                                        </td>
+                                    {% endif %}
 
                                 </tr>
 
                             {% empty %}
                                 <tr id="sin-sanciones">
-                                    <td colspan="7" class="px-5 py-14 text-center">
+                                    <td colspan="{% if user.is_authenticated %}7{% else %}6{% endif %}" class="px-5 py-14 text-center">
 
                                         <div class="text-4xl text-gray-300">
                                             <i class="fa-solid fa-rectangle-list"></i>
@@ -878,7 +954,7 @@
                             {% endfor %}
 
                             <tr id="sin-resultados" hidden>
-                                <td colspan="7" class="px-5 py-8 text-center text-sm text-gray-500">
+                                <td colspan="{% if user.is_authenticated %}7{% else %}6{% endif %}" class="px-5 py-8 text-center text-sm text-gray-500">
                                     <i class="fa-solid fa-magnifying-glass mb-2 text-xl"></i>
                                     <p>No se encontraron sanciones con los filtros seleccionados.</p>
                                 </td>
@@ -928,7 +1004,7 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-    // ELEMENTOS DEL FORMULARIO
+    // ELEMENTOS DEL FORMULARIO (Si el usuario está autenticado)
     const formulario = document.querySelector(
         'form[action="{% url "registrar_sancion" %}"]'
     );
@@ -941,94 +1017,118 @@ document.addEventListener("DOMContentLoaded", function () {
     const aviso = document.getElementById("aviso-doble-amarilla");
     const mensaje = document.getElementById("mensaje-jugadores");
 
-    // GUARDAR LAS OPCIONES ORIGINALES DE JUGADORES
-    const jugadoresOriginales = Array.from(jugador.options)
-        .filter(opcion => opcion.value !== "")
-        .map(opcion => ({
-            value: opcion.value,
-            texto: opcion.textContent.trim(),
-            equipo: opcion.dataset.equipo
-        }));
+    if (partido && jugador) {
+        // GUARDAR LAS OPCIONES ORIGINALES DE JUGADORES
+        const jugadoresOriginales = Array.from(jugador.options)
+            .filter(opcion => opcion.value !== "")
+            .map(opcion => ({
+                value: opcion.value,
+                texto: opcion.textContent.trim(),
+                equipo: opcion.dataset.equipo
+            }));
 
-    // VALIDAR FORMULARIO
-    function validar() {
-        const cantidadAmarillas = Number(amarillas.value || 0);
-        const cantidadRojas = Number(rojas.value || 0);
+        // VALIDAR FORMULARIO
+        function validar() {
+            const cantidadAmarillas = Number(amarillas.value || 0);
+            const cantidadRojas = Number(rojas.value || 0);
 
-        const valoresValidos =
-            amarillas.value !== "" &&
-            rojas.value !== "" &&
-            Number.isInteger(cantidadAmarillas) &&
-            Number.isInteger(cantidadRojas) &&
-            cantidadAmarillas >= 0 &&
-            cantidadAmarillas <= 20 &&
-            cantidadRojas >= 0 &&
-            cantidadRojas <= 10;
+            const valoresValidos =
+                amarillas.value !== "" &&
+                rojas.value !== "" &&
+                Number.isInteger(cantidadAmarillas) &&
+                Number.isInteger(cantidadRojas) &&
+                cantidadAmarillas >= 0 &&
+                cantidadAmarillas <= 20 &&
+                cantidadRojas >= 0 &&
+                cantidadRojas <= 10;
 
-        boton.disabled = !(
-            partido.value &&
-            jugador.value &&
-            valoresValidos
-        );
+            if (boton) {
+                boton.disabled = !(
+                    partido.value &&
+                    jugador.value &&
+                    valoresValidos
+                );
+            }
 
-        aviso.hidden = cantidadAmarillas < 2;
-    }
-
-    // MOSTRAR SOLO LOS JUGADORES DE LOS EQUIPOS DEL PARTIDO
-    function actualizarJugadores() {
-        const seleccion = partido.options[partido.selectedIndex];
-
-        const local = seleccion ? seleccion.dataset.local : "";
-        const visitante = seleccion ? seleccion.dataset.visitante : "";
-
-        const valorAnterior = jugador.value;
-
-        jugador.innerHTML = "";
-
-        const inicial = document.createElement("option");
-        inicial.value = "";
-        inicial.textContent = partido.value
-            ? "Seleccionar jugador..."
-            : "Selecciona primero un partido";
-
-        jugador.appendChild(inicial);
-
-        const disponibles = jugadoresOriginales.filter(j =>
-            j.equipo === local || j.equipo === visitante
-        );
-
-        disponibles.forEach(j => {
-            const opcion = document.createElement("option");
-            opcion.value = j.value;
-            opcion.textContent = j.texto;
-            opcion.dataset.equipo = j.equipo;
-            jugador.appendChild(opcion);
-        });
-
-        jugador.disabled = !partido.value || disponibles.length === 0;
-
-        if (disponibles.some(j => j.value === valorAnterior)) {
-            jugador.value = valorAnterior;
+            if (aviso) {
+                aviso.hidden = cantidadAmarillas < 2;
+            }
         }
 
-        if (!partido.value) {
-            mensaje.textContent =
-                "Se mostrarán los jugadores de los equipos participantes.";
-        } else if (disponibles.length > 0) {
-            mensaje.textContent =
-                disponibles.length + " jugador(es) disponibles para este partido.";
-        } else {
-            mensaje.textContent =
-                "No hay jugadores registrados para estos equipos.";
+        // MOSTRAR SOLO LOS JUGADORES DE LOS EQUIPOS DEL PARTIDO
+        function actualizarJugadores() {
+            const seleccion = partido.options[partido.selectedIndex];
+
+            const local = seleccion ? seleccion.dataset.local : "";
+            const visitante = seleccion ? seleccion.dataset.visitante : "";
+
+            const valorAnterior = jugador.value;
+
+            jugador.innerHTML = "";
+
+            const inicial = document.createElement("option");
+            inicial.value = "";
+            inicial.textContent = partido.value
+                ? "Seleccionar jugador..."
+                : "Selecciona primero un partido";
+
+            jugador.appendChild(inicial);
+
+            const disponibles = jugadoresOriginales.filter(j =>
+                j.equipo === local || j.equipo === visitante
+            );
+
+            disponibles.forEach(j => {
+                const opcion = document.createElement("option");
+                opcion.value = j.value;
+                opcion.textContent = j.texto;
+                opcion.dataset.equipo = j.equipo;
+                jugador.appendChild(opcion);
+            });
+
+            jugador.disabled = !partido.value || disponibles.length === 0;
+
+            if (disponibles.some(j => j.value === valorAnterior)) {
+                jugador.value = valorAnterior;
+            }
+
+            if (mensaje) {
+                if (!partido.value) {
+                    mensaje.textContent =
+                        "Se mostrarán los jugadores de los equipos participantes.";
+                } else if (disponibles.length > 0) {
+                    mensaje.textContent =
+                        disponibles.length + " jugador(es) disponibles para este partido.";
+                } else {
+                    mensaje.textContent =
+                        "No hay jugadores registrados para estos equipos.";
+                }
+            }
+
+            validar();
         }
 
-        validar();
-    }
+        partido.addEventListener("change", actualizarJugadores);
+        jugador.addEventListener("change", validar);
+        if (amarillas) amarillas.addEventListener("input", validar);
+        if (rojas) rojas.addEventListener("input", validar);
 
-    partido.addEventListener("change", actualizarJugadores);
-    jugador.addEventListener("change", validar);
-    amarillas.addEventListener("input", validar);
-    rojas.addEventListener("input", validar);
+        if (formulario) {
+            formulario.addEventListener("reset", function () {
+                setTimeout(function () {
+                    partido.value = "";
+                    jugador.value = "";
+                    if (amarillas) amarillas.value = "0";
+                    if (rojas) rojas.value = "0";
+
+                    actualizarJugadores();
+                    validar();
+                }, 0);
+            });
+        }
+
+        actualizarJugadores();
+    }
 
     // BUSCADOR Y FILTROS DEL HISTORIAL
     const busqueda = document.getElementById("buscar-sancion");
@@ -1046,8 +1146,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const sinSanciones = document.getElementById("sin-sanciones");
 
     function filtrarHistorial() {
-        const texto = busqueda.value.trim().toLowerCase();
-        const tipo = filtro.value;
+        const texto = busqueda ? busqueda.value.trim().toLowerCase() : "";
+        const tipo = filtro ? filtro.value : "";
 
         let visibles = 0;
 
@@ -1076,42 +1176,33 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         if (sinSanciones) {
-            sinResultados.hidden = true;
-            contador.textContent = "No hay sanciones registradas.";
+            if (sinResultados) sinResultados.hidden = true;
+            if (contador) contador.textContent = "No hay sanciones registradas.";
             return;
         }
 
-        sinResultados.hidden = visibles > 0 || filas.length === 0;
+        if (sinResultados) {
+            sinResultados.hidden = visibles > 0 || filas.length === 0;
+        }
 
-        contador.textContent =
-            "Mostrando " + visibles + " de " + filas.length +
-            " registro(s) de sanciones";
+        if (contador) {
+            contador.textContent =
+                "Mostrando " + visibles + " de " + filas.length +
+                " registro(s) de sanciones";
+        }
     }
 
-    busqueda.addEventListener("input", filtrarHistorial);
-    filtro.addEventListener("change", filtrarHistorial);
+    if (busqueda) busqueda.addEventListener("input", filtrarHistorial);
+    if (filtro) filtro.addEventListener("change", filtrarHistorial);
 
-    limpiarFiltros.addEventListener("click", function () {
-        busqueda.value = "";
-        filtro.value = "";
-        filtrarHistorial();
-    });
+    if (limpiarFiltros) {
+        limpiarFiltros.addEventListener("click", function () {
+            if (busqueda) busqueda.value = "";
+            if (filtro) filtro.value = "";
+            filtrarHistorial();
+        });
+    }
 
-    // LIMPIAR EL FORMULARIO SIN DEJAR ESTADOS INCONSISTENTES
-    formulario.addEventListener("reset", function () {
-        setTimeout(function () {
-            partido.value = "";
-            jugador.value = "";
-            amarillas.value = "0";
-            rojas.value = "0";
-
-            actualizarJugadores();
-            validar();
-        }, 0);
-    });
-
-    // INICIALIZAR
-    actualizarJugadores();
     filtrarHistorial();
 
 });
