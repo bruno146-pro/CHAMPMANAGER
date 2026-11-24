@@ -1,3 +1,4 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
@@ -32,6 +33,7 @@
             border-radius: 10px;
             color: #cbd5e1;
             transition: .2s;
+            text-decoration: none;
         }
 
         .nav-link:hover,
@@ -76,6 +78,7 @@
             border-radius: 10px;
             padding: 11px 17px;
             font-weight: 600;
+            text-decoration: none;
             transition: .2s;
         }
 
@@ -95,6 +98,7 @@
             font-weight: 700;
             transition: .2s;
             white-space: nowrap;
+            text-decoration: none;
         }
 
         .btn-edit {
@@ -109,6 +113,8 @@
         .btn-delete {
             background: #fef2f2;
             color: #b91c1c;
+            border: none;
+            cursor: pointer;
         }
 
         .btn-delete:hover {
@@ -128,7 +134,7 @@
 
 <div class="min-h-screen md:flex">
 
-    <!-- BARRA LATERAL DINÁMICA -->
+    <!-- BARRA LATERAL -->
     <aside class="sidebar text-white w-full md:w-64 md:min-h-screen md:fixed md:inset-y-0 md:left-0 z-20">
 
         <div class="px-6 py-6 border-b border-gray-700">
@@ -165,7 +171,7 @@
                     Campeonatos
                 </a>
 
-                <a href="{% url 'equipos' %}" class="nav-link active">
+                <a href="{% url 'equipos' %}" class="nav-link active" aria-current="page">
                     <i class="fa-solid fa-shield-halved w-5"></i>
                     Equipos
                 </a>
@@ -232,7 +238,7 @@
             {% endif %}
         </nav>
 
-        <!-- USUARIO Y CIERRE DE SESIÓN DINÁMICO -->
+        <!-- USUARIO Y CIERRE DE SESIÓN -->
         <div class="px-5 py-5 mt-2 border-t border-gray-700">
             {% if user.is_authenticated %}
 
@@ -358,9 +364,7 @@
                         <div class="w-12 h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center text-xl">
                             <i class="fa-solid fa-shield-halved"></i>
                         </div>
-                        <span class="text-xs text-gray-400 font-semibold">
-                            TOTAL
-                        </span>
+                        <span class="text-xs text-gray-400 font-semibold">TOTAL</span>
                     </div>
 
                     <p class="text-sm text-gray-500 mt-5">Equipos registrados</p>
@@ -374,9 +378,7 @@
                         <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
                             <i class="fa-solid fa-users"></i>
                         </div>
-                        <span class="text-xs text-gray-400 font-semibold">
-                            TOTAL
-                        </span>
+                        <span class="text-xs text-gray-400 font-semibold">TOTAL</span>
                     </div>
 
                     <p class="text-sm text-gray-500 mt-5">Jugadores registrados</p>
@@ -390,9 +392,7 @@
                         <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl">
                             <i class="fa-solid fa-trophy"></i>
                         </div>
-                        <span class="text-xs text-gray-400 font-semibold">
-                            TOTAL
-                        </span>
+                        <span class="text-xs text-gray-400 font-semibold">TOTAL</span>
                     </div>
 
                     <p class="text-sm text-gray-500 mt-5">Campeonatos</p>
@@ -419,7 +419,7 @@
 
                         <input id="buscar"
                                type="search"
-                               placeholder="Buscar equipo, delegado..."
+                               placeholder="Buscar equipo, delegado, campeonato..."
                                class="input-field pl-9"
                                aria-label="Buscar equipos">
                     </div>
@@ -467,12 +467,17 @@
                                         {{ equipo.delegado|default:"Sin delegado" }}
                                     </td>
 
-                                    <!-- CAMPEONATO -->
+                                    <!-- CAMPEONATOS INSCRITOS -->
                                     <td class="px-5 py-4">
-                                        {% if equipo.id_campeonato %}
-                                            <span class="inline-flex rounded-full bg-blue-50 text-blue-700 px-3 py-1.5 text-xs font-semibold">
-                                                {{ equipo.id_campeonato.nombre }}
-                                            </span>
+                                        {% if equipo.campeonatos_inscritos %}
+                                            <div class="flex flex-col items-start gap-2">
+                                                {% for campeonato in equipo.campeonatos_inscritos %}
+                                                    <span class="inline-flex items-center gap-2 rounded-full bg-blue-50 text-blue-700 px-3 py-1.5 text-xs font-semibold">
+                                                        <i class="fa-solid fa-trophy"></i>
+                                                        {{ campeonato.nombre }}
+                                                    </span>
+                                                {% endfor %}
+                                            </div>
                                         {% else %}
                                             <span class="text-gray-400">
                                                 Sin campeonato
@@ -551,7 +556,7 @@
                                         No se encontraron coincidencias
                                     </p>
                                     <p class="text-sm mt-1">
-                                        Intenta con otro nombre o delegado.
+                                        Intenta con otro nombre, delegado o campeonato.
                                     </p>
                                 </td>
                             </tr>

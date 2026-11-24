@@ -27,7 +27,11 @@ SECRET_KEY = 'django-insecure-^sva7_%=g+ws-ium39zhl!p%6ef@p6snk8_6kh8pqc1df$k@3i
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "192.168.101.8",
+]
 
 
 # Application definition
@@ -39,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
     'champmanageAPP',
 ]
 
@@ -70,6 +75,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'champmanager.wsgi.application'
+
+ASGI_APPLICATION = 'champmanager.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 
 
 # Database

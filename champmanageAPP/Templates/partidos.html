@@ -1,3 +1,4 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
@@ -18,9 +19,7 @@
             background: #f5f7fb;
         }
 
-        .sidebar {
-            background: #111827;
-        }
+        .sidebar { background: #111827; }
 
         .nav-link {
             display: flex;
@@ -55,9 +54,7 @@
             box-shadow: 0 3px 12px rgba(15, 23, 42, .025);
         }
 
-        .match-row:hover {
-            background: #f9fafb;
-        }
+        .match-row:hover { background: #f9fafb; }
 
         .field {
             width: 100%;
@@ -80,7 +77,7 @@
             justify-content: center;
             gap: 6px;
             border-radius: 9px;
-            padding: 8px 12px;
+            padding: 9px 12px;
             font-size: 13px;
             font-weight: 700;
             transition: background .2s;
@@ -90,23 +87,23 @@
             white-space: nowrap;
         }
 
-        .btn-edit {
-            background: #dbeafe;
-            color: #1d4ed8;
-        }
+        .btn-edit { background: #dbeafe; color: #1d4ed8; }
+        .btn-edit:hover { background: #bfdbfe; }
 
-        .btn-edit:hover {
-            background: #bfdbfe;
-        }
+        .btn-delete { background: #fee2e2; color: #b91c1c; }
+        .btn-delete:hover { background: #fecaca; }
 
-        .btn-delete {
-            background: #fee2e2;
-            color: #b91c1c;
-        }
+        .btn-green { background: #dcfce7; color: #166534; }
+        .btn-green:hover { background: #bbf7d0; }
 
-        .btn-delete:hover {
-            background: #fecaca;
-        }
+        .btn-blue { background: #dbeafe; color: #1d4ed8; }
+        .btn-blue:hover { background: #bfdbfe; }
+
+        .btn-yellow { background: #fef3c7; color: #92400e; }
+        .btn-yellow:hover { background: #fde68a; }
+
+        .btn-red { background: #fee2e2; color: #b91c1c; }
+        .btn-red:hover { background: #fecaca; }
 
         .score {
             display: inline-flex;
@@ -137,29 +134,7 @@
             transition: background .2s;
         }
 
-        .primary-btn:hover {
-            background: #b91c1c;
-        }
-
-        .secondary-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            background: white;
-            color: #475569;
-            border: 1px solid #e5e7eb;
-            padding: 12px 16px;
-            border-radius: 9px;
-            font-size: 13px;
-            font-weight: 700;
-            text-decoration: none;
-            transition: background .2s;
-        }
-
-        .secondary-btn:hover {
-            background: #f9fafb;
-        }
+        .primary-btn:hover { background: #b91c1c; }
 
         .message {
             border-radius: 12px;
@@ -168,26 +143,60 @@
             font-size: 14px;
         }
 
-        .message.success {
-            background: #f0fdf4;
-            border-color: #bbf7d0;
-            color: #166534;
+        .message.success { background: #f0fdf4; border-color: #bbf7d0; color: #166534; }
+        .message.error { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+        .message.info { background: #eff6ff; border-color: #bfdbfe; color: #1e40af; }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border-radius: 999px;
+            padding: 6px 10px;
+            font-size: 11px;
+            font-weight: 800;
+            white-space: nowrap;
         }
 
-        .message.error {
-            background: #fef2f2;
-            border-color: #fecaca;
-            color: #991b1b;
+        .status-programado { background: #f1f5f9; color: #475569; }
+        .status-en-juego { background: #fee2e2; color: #b91c1c; }
+        .status-descanso { background: #fef3c7; color: #92400e; }
+        .status-finalizado { background: #dcfce7; color: #166534; }
+
+        .event-item {
+            border-left: 3px solid #e5e7eb;
+            padding: 9px 0 9px 14px;
         }
 
-        .message.info {
-            background: #eff6ff;
-            border-color: #bfdbfe;
-            color: #1e40af;
+        .event-item.event-gol { border-left-color: #16a34a; }
+        .event-item.event-amarilla { border-left-color: #eab308; }
+        .event-item.event-roja { border-left-color: #dc2626; }
+
+        .card-yellow {
+            display: inline-block;
+            width: 12px;
+            height: 17px;
+            border-radius: 3px;
+            background: #facc15;
         }
 
-        [hidden] {
-            display: none !important;
+        .card-red {
+            display: inline-block;
+            width: 12px;
+            height: 17px;
+            border-radius: 3px;
+            background: #dc2626;
+        }
+
+        [hidden] { display: none !important; }
+
+        #avisoTiempoReal {
+            animation: aparecerAviso .3s ease-out;
+        }
+
+        @keyframes aparecerAviso {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @media (max-width: 767px) {
@@ -203,7 +212,7 @@
 
 <div class="min-h-screen md:flex">
 
-    <!-- BARRA LATERAL DINÁMICA -->
+    <!-- BARRA LATERAL -->
     <aside class="sidebar text-white w-full md:w-64 md:min-h-screen md:fixed md:inset-y-0 md:left-0 z-20">
 
         <div class="px-6 py-6 border-b border-gray-700">
@@ -216,9 +225,7 @@
                     <h1 class="text-xl font-extrabold tracking-tight">
                         CHAMP<span class="text-red-500">MANAGER</span>
                     </h1>
-                    <p class="text-xs text-gray-400 mt-1">
-                        Ligas Deportivas del Maule
-                    </p>
+                    <p class="text-xs text-gray-400 mt-1">Ligas Deportivas del Maule</p>
                 </div>
             </a>
         </div>
@@ -228,52 +235,41 @@
                 Principal
             </p>
 
-            <a href="{% url 'index' %}" class="nav-link">
-                <i class="fa-solid fa-house w-5"></i>
-                Inicio
-            </a>
-
             {% if user.is_authenticated %}
 
+                <a href="{% url 'index' %}" class="nav-link">
+                    <i class="fa-solid fa-house w-5"></i> Inicio
+                </a>
+
                 <a href="{% url 'campeonatos' %}" class="nav-link">
-                    <i class="fa-solid fa-trophy w-5"></i>
-                    Campeonatos
+                    <i class="fa-solid fa-trophy w-5"></i> Campeonatos
                 </a>
 
                 <a href="{% url 'equipos' %}" class="nav-link">
-                    <i class="fa-solid fa-shield-halved w-5"></i>
-                    Equipos
+                    <i class="fa-solid fa-shield-halved w-5"></i> Equipos
                 </a>
 
                 <a href="{% url 'jugadores' %}" class="nav-link">
-                    <i class="fa-solid fa-users w-5"></i>
-                    Jugadores
+                    <i class="fa-solid fa-users w-5"></i> Jugadores
                 </a>
 
                 <a href="{% url 'partidos' %}" class="nav-link active" aria-current="page">
-                    <i class="fa-solid fa-futbol w-5"></i>
-                    Partidos
+                    <i class="fa-solid fa-futbol w-5"></i> Partidos
                 </a>
 
                 <a href="{% url 'estadisticas' %}" class="nav-link">
-                    <i class="fa-solid fa-chart-column w-5"></i>
-                    Estadísticas
+                    <i class="fa-solid fa-chart-column w-5"></i> Estadísticas
                 </a>
 
                 <a href="{% url 'sanciones' %}" class="nav-link">
-                    <i class="fa-solid fa-rectangle-list w-5"></i>
-                    Sanciones
+                    <i class="fa-solid fa-rectangle-list w-5"></i> Sanciones
                 </a>
 
             {% else %}
 
                 <div class="mt-3 rounded-xl border border-gray-700 bg-gray-800 p-4">
                     <i class="fa-solid fa-lock text-red-400"></i>
-
-                    <p class="mt-2 text-sm font-semibold text-white">
-                        Módulos bloqueados
-                    </p>
-
+                    <p class="mt-2 text-sm font-semibold text-white">Módulos bloqueados</p>
                     <p class="mt-1 text-xs leading-5 text-gray-400">
                         Inicia sesión para utilizar los módulos del sistema.
                     </p>
@@ -300,15 +296,15 @@
                     </p>
 
                     <a href="{% url 'admin_panel' %}" class="nav-link">
-                        <i class="fa-solid fa-gear w-5"></i>
-                        Administrar sistema
+                        <i class="fa-solid fa-gear w-5"></i> Administrar sistema
                     </a>
                 </div>
             {% endif %}
         </nav>
 
-        <!-- USUARIO Y CIERRE DE SESIÓN DINÁMICO -->
+        <!-- USUARIO -->
         <div class="px-5 py-5 mt-2 border-t border-gray-700">
+
             {% if user.is_authenticated %}
 
                 <div class="flex items-center gap-3">
@@ -348,7 +344,6 @@
                     <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
                         <i class="fa-solid fa-user-lock"></i>
                     </div>
-
                     <div>
                         <p class="text-sm font-semibold">Invitado</p>
                         <p class="text-xs text-gray-400">Sesión no iniciada</p>
@@ -365,6 +360,7 @@
         <!-- CABECERA -->
         <header class="bg-white border-b border-gray-200 px-5 md:px-8 py-4">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+
                 <div>
                     <p class="text-sm text-gray-500">
                         Ligas Deportivas del Maule / Partidos
@@ -375,24 +371,16 @@
                     </h2>
 
                     <p class="text-sm text-gray-500 mt-1">
-                        Registra, consulta y administra los encuentros y sus resultados.
+                        Consulta los encuentros, resultados y acontecimientos deportivos.
                     </p>
                 </div>
 
-                <div class="flex items-center gap-3">
-                    <div class="hidden sm:block text-right">
-                        <p class="text-sm font-semibold">Sistema de gestión</p>
-                        <p class="text-xs text-gray-500">Django · AWS RDS MySQL</p>
-                    </div>
-
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'crear_partido' %}"
-                           class="primary-btn">
-                            <i class="fa-solid fa-plus"></i>
-                            Registrar partido
-                        </a>
-                    {% endif %}
-                </div>
+                {% if user.is_authenticated and user.is_staff %}
+                    <a href="{% url 'crear_partido' %}" class="primary-btn">
+                        <i class="fa-solid fa-plus"></i>
+                        Registrar partido
+                    </a>
+                {% endif %}
             </div>
         </header>
 
@@ -403,13 +391,9 @@
                 <div class="space-y-2">
                     {% for message in messages %}
                         <div class="message
-                            {% if 'success' in message.tags %}
-                                success
-                            {% elif 'error' in message.tags %}
-                                error
-                            {% else %}
-                                info
-                            {% endif %}">
+                            {% if 'success' in message.tags %}success
+                            {% elif 'error' in message.tags %}error
+                            {% else %}info{% endif %}">
                             {{ message }}
                         </div>
                     {% endfor %}
@@ -440,7 +424,7 @@
                             {{ total_partidos|default_if_none:0 }}
                         </p>
                         <p class="text-xs text-gray-500 mt-2">
-                            Encuentros registrados en el sistema.
+                            Encuentros disponibles según tus permisos.
                         </p>
                     </article>
 
@@ -454,7 +438,6 @@
 
                         <p class="text-sm text-gray-500 mt-5">Organización deportiva</p>
                         <p class="text-xl font-extrabold mt-1">Fixture y resultados</p>
-
                         <p class="text-xs text-gray-500 mt-2">
                             Consulta los equipos y marcadores de cada encuentro.
                         </p>
@@ -463,25 +446,22 @@
                     <article class="stat-card bg-white rounded-2xl border border-gray-200 p-5">
                         <div class="flex items-center justify-between">
                             <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
-                                <i class="fa-solid fa-circle-plus"></i>
+                                <i class="fa-solid fa-bell"></i>
                             </div>
-                            <span class="text-xs font-semibold text-gray-400">ACCESO RÁPIDO</span>
+                            <span class="text-xs font-semibold text-gray-400">EN VIVO</span>
                         </div>
 
-                        <p class="text-sm text-gray-500 mt-5">Nuevo encuentro</p>
-                        <p class="text-xl font-extrabold mt-1">Registrar partido</p>
-
-                        <a href="{% url 'crear_partido' %}"
-                           class="text-xs text-emerald-600 mt-2 inline-block">
-                            Crear registro
-                            <i class="fa-solid fa-arrow-right ml-1"></i>
-                        </a>
+                        <p class="text-sm text-gray-500 mt-5">Seguimiento de partidos</p>
+                        <p class="text-xl font-extrabold mt-1">Eventos deportivos</p>
+                        <p class="text-xs text-gray-500 mt-2">
+                            Goles, tarjetas, descanso y resultados finales.
+                        </p>
                     </article>
 
                 </div>
             </section>
 
-            <!-- TABLA DE PARTIDOS -->
+            <!-- LISTADO DE PARTIDOS -->
             <section class="section-card overflow-hidden">
 
                 <div class="p-5 md:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -498,18 +478,18 @@
                             Buscar partido
                         </label>
 
-                        <input
-                            type="search"
-                            id="buscador"
-                            class="field"
-                            placeholder="Campeonato, fecha o equipo..."
-                            aria-label="Buscar partidos"
-                        >
+                        <input type="search"
+                               id="buscador"
+                               class="field"
+                               placeholder="Campeonato, fecha o equipo..."
+                               aria-label="Buscar partidos">
                     </div>
                 </div>
 
                 <div class="overflow-x-auto">
-                    <table id="tablaPartidos" class="w-full min-w-[1050px] text-left text-sm">
+
+                    <table id="tablaPartidos" class="w-full min-w-[1100px] text-left text-sm">
+
                         <thead class="bg-gray-50 text-xs uppercase tracking-wide text-gray-500">
                             <tr>
                                 <th class="px-5 py-4 font-semibold">ID</th>
@@ -519,15 +499,20 @@
                                 <th class="px-5 py-4 font-semibold">Equipo local</th>
                                 <th class="px-5 py-4 font-semibold">Resultado</th>
                                 <th class="px-5 py-4 font-semibold">Equipo visitante</th>
-                                {% if user.is_authenticated %}
+                                <th class="px-5 py-4 font-semibold">Estado</th>
+
+                                {% if user.is_staff %}
                                     <th class="px-5 py-4 font-semibold">Acciones</th>
                                 {% endif %}
                             </tr>
                         </thead>
 
                         <tbody class="divide-y divide-gray-100">
+
                             {% for partido in partidos %}
-                                <tr class="match-row transition">
+
+                                <tr class="match-row transition"
+                                    data-partido-id="{{ partido.id_partido }}">
 
                                     <td class="px-5 py-4 font-medium text-gray-500">
                                         #{{ partido.id_partido }}
@@ -559,10 +544,11 @@
                                     </td>
 
                                     <td class="px-5 py-4">
-                                        <span class="score">
-                                            {{ partido.resultado_local|default_if_none:"-" }}
+                                        <span class="score"
+                                              data-marcador-partido="{{ partido.id_partido }}">
+                                            <span data-goles-local>{{ partido.resultado_local|default_if_none:"0" }}</span>
                                             <span class="text-gray-400">:</span>
-                                            {{ partido.resultado_visitante|default_if_none:"-" }}
+                                            <span data-goles-visitante>{{ partido.resultado_visitante|default_if_none:"0" }}</span>
                                         </span>
                                     </td>
 
@@ -577,33 +563,796 @@
                                         </div>
                                     </td>
 
-                                    {% if user.is_authenticated %}
+                                    <td class="px-5 py-4">
+                                        <span class="status
+                                            {% if partido.estado == 'programado' %}status-programado
+                                            {% elif partido.estado == 'en_juego' %}status-en-juego
+                                            {% elif partido.estado == 'descanso' %}status-descanso
+                                            {% elif partido.estado == 'finalizado' %}status-finalizado
+                                            {% else %}status-programado{% endif %}"
+                                            data-estado-partido="{{ partido.id_partido }}">
+
+                                            {% if partido.estado == "programado" %}
+                                                <i class="fa-regular fa-clock"></i> Programado
+                                            {% elif partido.estado == "en_juego" %}
+                                                <i class="fa-solid fa-circle animate-pulse"></i> EN VIVO
+                                            {% elif partido.estado == "descanso" %}
+                                                <i class="fa-solid fa-mug-hot"></i> Descanso
+                                            {% elif partido.estado == "finalizado" %}
+                                                <i class="fa-solid fa-check-circle"></i> Finalizado
+                                            {% else %}
+                                                Sin estado
+                                            {% endif %}
+                                        </span>
+                                    </td>
+
+                                    {% if user.is_staff %}
                                         <td class="px-5 py-4">
                                             <div class="flex items-center gap-2">
+
                                                 <a href="{% url 'editar_partido' partido.id_partido %}"
                                                    class="action-btn btn-edit">
-                                                    <i class="fa-solid fa-pen-to-square"></i>
-                                                    Editar
+                                                    <i class="fa-solid fa-pen-to-square"></i> Editar
                                                 </a>
 
-                                                <form
-                                                    method="post"
-                                                    action="{% url 'eliminar_partido' partido.id_partido %}"
-                                                    onsubmit="return confirm('¿Estás seguro de que deseas eliminar este partido? Esta acción no se puede deshacer.');">
+                                                <form method="post"
+                                                      action="{% url 'eliminar_partido' partido.id_partido %}"
+                                                      onsubmit="return confirm('¿Estás seguro de que deseas eliminar este partido? Esta acción no se puede deshacer.');">
                                                     {% csrf_token %}
-
                                                     <button type="submit" class="action-btn btn-delete">
-                                                        <i class="fa-solid fa-trash"></i>
-                                                        Eliminar
+                                                        <i class="fa-solid fa-trash"></i> Eliminar
                                                     </button>
                                                 </form>
+
                                             </div>
                                         </td>
                                     {% endif %}
                                 </tr>
+
+                                <!-- DETALLE DEL PARTIDO -->
+                                <tr class="detalle-partido">
+                                    <td colspan="{% if user.is_staff %}9{% else %}8{% endif %}"
+                                        class="px-5 py-5 bg-gray-50">
+
+                                        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+
+                                            <!-- HISTORIAL DE ACONTECIMIENTOS -->
+                                            <div class="bg-white border border-gray-200 rounded-xl p-5">
+
+                                                <div class="flex items-center justify-between mb-4">
+                                                    <h4 class="font-bold text-gray-900">
+                                                        <i class="fa-solid fa-list-ul text-red-600 mr-2"></i>
+                                                        Acontecimientos del partido
+                                                    </h4>
+                                                    <span class="text-xs text-gray-400">Historial en vivo</span>
+                                                </div>
+
+                                                <div class="space-y-2"
+                                                     data-lista-eventos="{{ partido.id_partido }}">
+
+                                                    {% for evento in partido.eventos.all %}
+
+                                                        <div class="event-item
+                                                            {% if evento.tipo == 'gol_local' or evento.tipo == 'gol_visitante' %}event-gol
+                                                            {% elif evento.tipo == 'tarjeta_amarilla' %}event-amarilla
+                                                            {% elif evento.tipo == 'tarjeta_roja' %}event-roja{% endif %}">
+
+                                                            <div class="flex flex-wrap items-center justify-between gap-2">
+
+                                                                <p class="text-sm font-semibold text-gray-800">
+
+                                                                    {% if evento.tipo == "gol_local" %}
+                                                                        <i class="fa-solid fa-futbol text-green-600 mr-1"></i>
+                                                                        Gol del equipo local
+
+                                                                    {% elif evento.tipo == "gol_visitante" %}
+                                                                        <i class="fa-solid fa-futbol text-blue-600 mr-1"></i>
+                                                                        Gol del equipo visitante
+
+                                                                    {% elif evento.tipo == "tarjeta_amarilla" %}
+                                                                        <i class="fa-solid fa-square text-yellow-400 mr-1"></i>
+                                                                        Tarjeta amarilla
+
+                                                                    {% elif evento.tipo == "tarjeta_roja" %}
+                                                                        <i class="fa-solid fa-square text-red-600 mr-1"></i>
+                                                                        Tarjeta roja
+
+                                                                    {% elif evento.tipo == "fin_primer_tiempo" %}
+                                                                        <i class="fa-solid fa-hourglass-half text-yellow-600 mr-1"></i>
+                                                                        Final del primer tiempo
+
+                                                                    {% elif evento.tipo == "iniciar_segundo_tiempo" %}
+                                                                        <i class="fa-solid fa-play text-green-600 mr-1"></i>
+                                                                        Inicio del segundo tiempo
+
+                                                                    {% elif evento.tipo == "iniciar_alargue_primer_tiempo" %}
+                                                                        <i class="fa-solid fa-stopwatch text-yellow-600 mr-1"></i>
+                                                                        Inicio del primer tiempo del alargue
+
+                                                                    {% elif evento.tipo == "fin_alargue_primer_tiempo" %}
+                                                                        <i class="fa-solid fa-hourglass-half text-yellow-600 mr-1"></i>
+                                                                        Final del primer tiempo del alargue
+
+                                                                    {% elif evento.tipo == "iniciar_alargue_segundo_tiempo" %}
+                                                                        <i class="fa-solid fa-play text-green-600 mr-1"></i>
+                                                                        Inicio del segundo tiempo del alargue
+
+                                                                    {% elif evento.tipo == "partido_finalizado" %}
+                                                                        <i class="fa-solid fa-flag-checkered text-green-600 mr-1"></i>
+                                                                        Partido finalizado
+
+                                                                    {% elif evento.tipo == "iniciar" %}
+                                                                        <i class="fa-solid fa-play text-green-600 mr-1"></i>
+                                                                        Partido iniciado
+
+                                                                    {% else %}
+                                                                        <i class="fa-solid fa-bell text-gray-500 mr-1"></i>
+                                                                        Acontecimiento
+                                                                    {% endif %}
+
+                                                                </p>
+
+                                                                {% if evento.minuto != None %}
+                                                                    <span class="text-xs font-bold text-gray-500">
+                                                                        {{ evento.minuto }}'
+                                                                    </span>
+                                                                {% endif %}
+                                                            </div>
+
+                                                            {% if evento.jugador %}
+                                                                <p class="text-xs font-semibold text-gray-700 mt-1">
+                                                                    <i class="fa-solid fa-user mr-1 text-gray-400"></i>
+                                                                    {{ evento.jugador.nombre }} {{ evento.jugador.apellido }}
+                                                                    <span class="text-gray-400 font-normal">
+                                                                        · {{ evento.jugador.id_equipo.nombre }}
+                                                                    </span>
+                                                                </p>
+                                                            {% endif %}
+
+                                                            {% if evento.descripcion %}
+                                                                <p class="text-xs text-gray-500 mt-1">
+                                                                    {{ evento.descripcion }}
+                                                                </p>
+                                                            {% endif %}
+
+                                                            <p class="text-xs text-gray-400 mt-1">
+                                                                {{ evento.fecha_hora|date:"d/m/Y H:i" }}
+                                                            </p>
+                                                        </div>
+
+                                                    {% empty %}
+
+                                                        <div class="text-center py-6" data-sin-eventos>
+                                                            <i class="fa-regular fa-calendar text-3xl text-gray-300"></i>
+                                                            <p class="text-sm text-gray-500 mt-3">
+                                                                Todavía no hay acontecimientos registrados.
+                                                            </p>
+                                                        </div>
+
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+
+                                            <!-- CONTROLES DEL ADMINISTRADOR -->
+                                            {% if user.is_staff %}
+
+                                                <div class="bg-white border border-gray-200 rounded-xl p-5">
+
+                                                    <div class="flex items-center justify-between mb-4">
+                                                        <h4 class="font-bold text-gray-900">
+                                                            <i class="fa-solid fa-sliders text-red-600 mr-2"></i>
+                                                            Control del encuentro
+                                                        </h4>
+                                                        <span class="text-xs font-bold text-red-600">
+                                                            ADMINISTRADOR
+                                                        </span>
+                                                    </div>
+
+                                                    {% if partido.estado == "programado" %}
+
+                                                        <p class="text-sm text-gray-500 mb-4">
+                                                            El encuentro está programado. Puedes iniciarlo cuando corresponda.
+                                                        </p>
+
+                                                        <form method="post"
+                                                              action="{% url 'gestionar_evento_partido' partido.id_partido %}">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" name="accion" value="iniciar">
+
+                                                            <button type="submit" class="action-btn btn-green w-full">
+                                                                <i class="fa-solid fa-play"></i>
+                                                                Iniciar partido
+                                                            </button>
+                                                        </form>
+
+                                                    {% elif partido.estado == "en_juego" %}
+
+                                                        <div class="mb-5 rounded-lg bg-red-50 border border-red-100 p-3">
+                                                            <p class="text-sm font-bold text-red-700">
+                                                                <i class="fa-solid fa-circle animate-pulse mr-1"></i>
+                                                                Partido en juego
+                                                            </p>
+                                                            <p class="text-xs text-red-600 mt-1">
+                                                                Registra goles, asistencias, tarjetas y administra el tiempo del encuentro.
+                                                            </p>
+                                                        </div>
+
+                                                        <!-- REGISTRAR GOL LOCAL -->
+                                                        <div class="mb-4 rounded-xl border border-gray-200 p-4">
+                                                            <h5 class="font-bold text-sm text-gray-800 mb-3">
+                                                                <i class="fa-solid fa-futbol text-green-600 mr-2"></i>
+                                                                Gol del equipo local
+                                                            </h5>
+
+                                                            <p class="text-xs text-gray-500 mb-3">
+                                                                {{ partido.equipo_local.nombre }}
+                                                            </p>
+
+                                                            <form method="post"
+                                                                  action="{% url 'gestionar_evento_partido' partido.id_partido %}"
+                                                                  class="space-y-3">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="accion" value="gol_local">
+
+                                                                <div>
+                                                                    <label class="block text-xs font-bold text-gray-600 mb-1">
+                                                                        Seleccionar goleador
+                                                                    </label>
+
+                                                                    <select name="id_jugador" class="field" required>
+                                                                        <option value="">Selecciona un jugador</option>
+
+                                                                        {% for jugador in partido.equipo_local.jugador_set.all %}
+                                                                            <option value="{{ jugador.pk }}">
+                                                                                {{ jugador.nombre }} {{ jugador.apellido }}
+                                                                                {% if jugador.numero_camiseta %}
+                                                                                    · N° {{ jugador.numero_camiseta }}
+                                                                                {% endif %}
+                                                                            </option>
+                                                                        {% endfor %}
+                                                                    </select>
+                                                                </div>
+
+                                                                <!-- NUEVO: ASISTENTE LOCAL -->
+                                                                <div>
+                                                                    <label class="block text-xs font-bold text-gray-600 mb-1">
+                                                                        <i class="fa-solid fa-hands-helping text-green-600 mr-1"></i>
+                                                                        Asistencia (opcional)
+                                                                    </label>
+
+                                                                    <select name="id_asistente" class="field">
+                                                                        <option value="">Sin asistencia</option>
+
+                                                                        {% for jugador in partido.equipo_local.jugador_set.all %}
+                                                                            <option value="{{ jugador.pk }}">
+                                                                                {{ jugador.nombre }} {{ jugador.apellido }}
+                                                                                {% if jugador.numero_camiseta %}
+                                                                                    · N° {{ jugador.numero_camiseta }}
+                                                                                {% endif %}
+                                                                            </option>
+                                                                        {% endfor %}
+                                                                    </select>
+
+                                                                    <p class="text-xs text-gray-400 mt-1">
+                                                                        Selecciona al compañero que realizó el pase de gol.
+                                                                    </p>
+                                                                </div>
+
+                                                                <div>
+                                                                    <label class="block text-xs font-bold text-gray-600 mb-1">
+                                                                        Minuto del gol
+                                                                    </label>
+
+                                                                    <input type="number"
+                                                                           name="minuto"
+                                                                           min="0"
+                                                                           max="150"
+                                                                           class="field"
+                                                                           placeholder="Ej: 25">
+                                                                </div>
+
+                                                                <button type="submit" class="action-btn btn-green w-full">
+                                                                    <i class="fa-solid fa-futbol"></i>
+                                                                    Registrar gol local
+                                                                </button>
+                                                            </form>
+                                                        </div>
+
+                                                        <!-- REGISTRAR GOL VISITANTE -->
+                                                        <div class="mb-4 rounded-xl border border-gray-200 p-4">
+                                                            <h5 class="font-bold text-sm text-gray-800 mb-3">
+                                                                <i class="fa-solid fa-futbol text-blue-600 mr-2"></i>
+                                                                Gol del equipo visitante
+                                                            </h5>
+
+                                                            <p class="text-xs text-gray-500 mb-3">
+                                                                {{ partido.equipo_visitante.nombre }}
+                                                            </p>
+
+                                                            <form method="post"
+                                                                  action="{% url 'gestionar_evento_partido' partido.id_partido %}"
+                                                                  class="space-y-3">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="accion" value="gol_visitante">
+
+                                                                <div>
+                                                                    <label class="block text-xs font-bold text-gray-600 mb-1">
+                                                                        Seleccionar goleador
+                                                                    </label>
+
+                                                                    <select name="id_jugador" class="field" required>
+                                                                        <option value="">Selecciona un jugador</option>
+
+                                                                        {% for jugador in partido.equipo_visitante.jugador_set.all %}
+                                                                            <option value="{{ jugador.pk }}">
+                                                                                {{ jugador.nombre }} {{ jugador.apellido }}
+                                                                                {% if jugador.numero_camiseta %}
+                                                                                    · N° {{ jugador.numero_camiseta }}
+                                                                                {% endif %}
+                                                                            </option>
+                                                                        {% endfor %}
+                                                                    </select>
+                                                                </div>
+
+                                                                <!-- NUEVO: ASISTENTE VISITANTE -->
+                                                                <div>
+                                                                    <label class="block text-xs font-bold text-gray-600 mb-1">
+                                                                        <i class="fa-solid fa-hands-helping text-blue-600 mr-1"></i>
+                                                                        Asistencia (opcional)
+                                                                    </label>
+
+                                                                    <select name="id_asistente" class="field">
+                                                                        <option value="">Sin asistencia</option>
+
+                                                                        {% for jugador in partido.equipo_visitante.jugador_set.all %}
+                                                                            <option value="{{ jugador.pk }}">
+                                                                                {{ jugador.nombre }} {{ jugador.apellido }}
+                                                                                {% if jugador.numero_camiseta %}
+                                                                                    · N° {{ jugador.numero_camiseta }}
+                                                                                {% endif %}
+                                                                            </option>
+                                                                        {% endfor %}
+                                                                    </select>
+
+                                                                    <p class="text-xs text-gray-400 mt-1">
+                                                                        Selecciona al compañero que realizó el pase de gol.
+                                                                    </p>
+                                                                </div>
+
+                                                                <div>
+                                                                    <label class="block text-xs font-bold text-gray-600 mb-1">
+                                                                        Minuto del gol
+                                                                    </label>
+
+                                                                    <input type="number"
+                                                                           name="minuto"
+                                                                           min="0"
+                                                                           max="150"
+                                                                           class="field"
+                                                                           placeholder="Ej: 40">
+                                                                </div>
+
+                                                                <button type="submit" class="action-btn btn-blue w-full">
+                                                                    <i class="fa-solid fa-futbol"></i>
+                                                                    Registrar gol visitante
+                                                                </button>
+                                                            </form>
+                                                        </div>
+
+                                                        <!-- REGISTRAR TARJETAS -->
+                                                        <div class="mb-4 rounded-xl border border-gray-200 p-4">
+                                                            <h5 class="font-bold text-sm text-gray-800 mb-3">
+                                                                <i class="fa-solid fa-rectangle-list text-yellow-500 mr-2"></i>
+                                                                Registrar tarjeta
+                                                            </h5>
+
+                                                            <form method="post"
+                                                                  action="{% url 'gestionar_evento_partido' partido.id_partido %}"
+                                                                  class="space-y-3">
+
+                                                                {% csrf_token %}
+
+                                                                <div>
+                                                                    <label class="block text-xs font-bold text-gray-600 mb-1">
+                                                                        Jugador sancionado
+                                                                    </label>
+
+                                                                    <select name="id_jugador" class="field" required>
+                                                                        <option value="">Selecciona un jugador</option>
+
+                                                                        <optgroup label="{{ partido.equipo_local.nombre }}">
+                                                                            {% for jugador in partido.equipo_local.jugador_set.all %}
+                                                                                <option value="{{ jugador.pk }}">
+                                                                                    {{ jugador.nombre }} {{ jugador.apellido }}
+                                                                                    {% if jugador.numero_camiseta %}
+                                                                                        · N° {{ jugador.numero_camiseta }}
+                                                                                    {% endif %}
+                                                                                </option>
+                                                                            {% endfor %}
+                                                                        </optgroup>
+
+                                                                        <optgroup label="{{ partido.equipo_visitante.nombre }}">
+                                                                            {% for jugador in partido.equipo_visitante.jugador_set.all %}
+                                                                                <option value="{{ jugador.pk }}">
+                                                                                    {{ jugador.nombre }} {{ jugador.apellido }}
+                                                                                    {% if jugador.numero_camiseta %}
+                                                                                        · N° {{ jugador.numero_camiseta }}
+                                                                                    {% endif %}
+                                                                                </option>
+                                                                            {% endfor %}
+                                                                        </optgroup>
+                                                                    </select>
+                                                                </div>
+
+                                                                <div>
+                                                                    <label class="block text-xs font-bold text-gray-600 mb-1">
+                                                                        Minuto de la tarjeta
+                                                                    </label>
+
+                                                                    <input type="number"
+                                                                           name="minuto"
+                                                                           min="0"
+                                                                           max="150"
+                                                                           class="field"
+                                                                           placeholder="Ej: 55">
+                                                                </div>
+
+                                                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                                                    <button type="submit"
+                                                                            name="accion"
+                                                                            value="tarjeta_amarilla"
+                                                                            class="action-btn btn-yellow w-full">
+                                                                        <i class="fa-solid fa-square"></i>
+                                                                        Tarjeta amarilla
+                                                                    </button>
+
+                                                                    <button type="submit"
+                                                                            name="accion"
+                                                                            value="tarjeta_roja"
+                                                                            class="action-btn btn-red w-full">
+                                                                        <i class="fa-solid fa-square"></i>
+                                                                        Tarjeta roja
+                                                                    </button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+
+                                                        <!-- CONTROLES SEGÚN EL PERIODO -->
+
+                                                        {% if partido.periodo == "primer_tiempo" %}
+
+                                                            <form method="post"
+                                                                  action="{% url 'gestionar_evento_partido' partido.id_partido %}"
+                                                                  class="mb-3"
+                                                                  onsubmit="return confirm('¿Confirmas el final del primer tiempo?');">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="accion" value="fin_primer_tiempo">
+
+                                                                <button type="submit" class="action-btn btn-yellow w-full">
+                                                                    <i class="fa-solid fa-hourglass-half"></i>
+                                                                    Finalizar primer tiempo
+                                                                </button>
+                                                            </form>
+
+                                                        {% elif partido.periodo == "segundo_tiempo" %}
+
+                                                            {% if partido.resultado_local == partido.resultado_visitante %}
+                                                                <div class="mb-3 rounded-lg bg-yellow-50 border border-yellow-200 p-3">
+                                                                    <p class="text-sm font-bold text-yellow-800">
+                                                                        <i class="fa-solid fa-circle-exclamation mr-1"></i>
+                                                                        Partido empatado
+                                                                    </p>
+                                                                    <p class="text-xs text-yellow-700 mt-1">
+                                                                        Puedes finalizar el encuentro o iniciar el alargue.
+                                                                    </p>
+                                                                </div>
+
+                                                                <form method="post"
+                                                                      action="{% url 'gestionar_evento_partido' partido.id_partido %}"
+                                                                      class="mb-3"
+                                                                      onsubmit="return confirm('¿Deseas iniciar el primer tiempo del alargue?');">
+                                                                    {% csrf_token %}
+                                                                    <input type="hidden" name="accion" value="iniciar_alargue_primer_tiempo">
+
+                                                                    <button type="submit" class="action-btn btn-yellow w-full">
+                                                                        <i class="fa-solid fa-stopwatch"></i>
+                                                                        Iniciar primer tiempo del alargue
+                                                                    </button>
+                                                                </form>
+                                                            {% endif %}
+
+                                                            <form method="post"
+                                                                  action="{% url 'gestionar_evento_partido' partido.id_partido %}"
+                                                                  onsubmit="return confirm('¿Confirmas que deseas finalizar el partido?');">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="accion" value="partido_finalizado">
+
+                                                                <button type="submit" class="action-btn btn-red w-full">
+                                                                    <i class="fa-solid fa-flag-checkered"></i>
+                                                                    Finalizar partido
+                                                                </button>
+                                                            </form>
+
+                                                        {% elif partido.periodo == "alargue_primer_tiempo" %}
+
+                                                            <form method="post"
+                                                                  action="{% url 'gestionar_evento_partido' partido.id_partido %}"
+                                                                  class="mb-3"
+                                                                  onsubmit="return confirm('¿Confirmas el final del primer tiempo del alargue?');">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="accion" value="fin_alargue_primer_tiempo">
+
+                                                                <button type="submit" class="action-btn btn-yellow w-full">
+                                                                    <i class="fa-solid fa-hourglass-half"></i>
+                                                                    Finalizar primer tiempo del alargue
+                                                                </button>
+                                                            </form>
+
+                                                        {% elif partido.periodo == "alargue_segundo_tiempo" %}
+
+                                                            <form method="post"
+                                                                  action="{% url 'gestionar_evento_partido' partido.id_partido %}"
+                                                                  onsubmit="return confirm('¿Confirmas que deseas finalizar el partido?');">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="accion" value="partido_finalizado">
+
+                                                                <button type="submit" class="action-btn btn-red w-full">
+                                                                    <i class="fa-solid fa-flag-checkered"></i>
+                                                                    Finalizar partido
+                                                                </button>
+                                                            </form>
+
+                                                        {% endif %}
+
+                                                    {% elif partido.estado == "descanso" %}
+
+                                                        {% if partido.periodo == "primer_tiempo" %}
+
+                                                            <div class="mb-4 rounded-lg bg-yellow-50 border border-yellow-100 p-3">
+                                                                <p class="text-sm font-bold text-yellow-800">
+                                                                    <i class="fa-solid fa-mug-hot mr-1"></i>
+                                                                    Descanso del primer tiempo
+                                                                </p>
+                                                                <p class="text-xs text-yellow-700 mt-1">
+                                                                    El primer tiempo ha finalizado.
+                                                                </p>
+                                                            </div>
+
+                                                            <form method="post"
+                                                                  action="{% url 'gestionar_evento_partido' partido.id_partido %}">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="accion" value="iniciar_segundo_tiempo">
+
+                                                                <button type="submit" class="action-btn btn-green w-full">
+                                                                    <i class="fa-solid fa-play"></i>
+                                                                    Iniciar segundo tiempo
+                                                                </button>
+                                                            </form>
+
+                                                        {% elif partido.periodo == "alargue_primer_tiempo" %}
+
+                                                            <div class="mb-4 rounded-lg bg-yellow-50 border border-yellow-100 p-3">
+                                                                <p class="text-sm font-bold text-yellow-800">
+                                                                    <i class="fa-solid fa-mug-hot mr-1"></i>
+                                                                    Descanso del alargue
+                                                                </p>
+                                                                <p class="text-xs text-yellow-700 mt-1">
+                                                                    Ha finalizado el primer tiempo del alargue.
+                                                                </p>
+                                                            </div>
+
+                                                            <form method="post"
+                                                                  action="{% url 'gestionar_evento_partido' partido.id_partido %}">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="accion" value="iniciar_alargue_segundo_tiempo">
+
+                                                                <button type="submit" class="action-btn btn-green w-full">
+                                                                    <i class="fa-solid fa-play"></i>
+                                                                    Iniciar segundo tiempo del alargue
+                                                                </button>
+                                                            </form>
+
+                                                        {% endif %}
+
+                                                    {% elif partido.estado == "finalizado" %}
+
+                                                        <div class="rounded-lg bg-green-50 border border-green-100 p-4">
+                                                            <p class="text-sm font-bold text-green-800">
+                                                                <i class="fa-solid fa-circle-check mr-1"></i>
+                                                                Encuentro finalizado
+                                                            </p>
+
+                                                            <p class="text-xs text-green-700 mt-2">
+                                                                Resultado definitivo:
+                                                            </p>
+
+                                                            <p class="text-2xl font-extrabold text-green-800 mt-1">
+                                                                {{ partido.resultado_local|default_if_none:"0" }}
+                                                                -
+                                                                {{ partido.resultado_visitante|default_if_none:"0" }}
+                                                            </p>
+                                                        </div>
+
+                                                    {% endif %}
+                                                </div>
+
+                                            {% else %}
+
+                                                <!-- VISTA DEL DELEGADO -->
+                                                <div class="bg-white border border-gray-200 rounded-xl p-5">
+
+                                                    <h4 class="font-bold text-gray-900 mb-4">
+                                                        <i class="fa-solid fa-eye text-blue-600 mr-2"></i>
+                                                        Seguimiento del encuentro
+                                                    </h4>
+
+                                                    <p class="text-sm text-gray-500">
+                                                        Consulta el estado, el marcador y los acontecimientos de este partido.
+                                                    </p>
+
+                                                    <div class="mt-4 rounded-xl bg-gray-50 p-4">
+                                                        <p class="text-xs uppercase tracking-wide font-bold text-gray-500">
+                                                            Marcador actual
+                                                        </p>
+
+                                                        <div class="flex items-center justify-between gap-3 mt-3">
+                                                            <div class="flex-1 text-center">
+                                                                <p class="text-sm font-bold text-gray-800">
+                                                                    {{ partido.equipo_local.nombre }}
+                                                                </p>
+                                                            </div>
+
+                                                            <p class="text-2xl font-extrabold text-gray-900"
+                                                               data-marcador-detalle="{{ partido.id_partido }}">
+                                                                <span data-goles-local>{{ partido.resultado_local|default_if_none:"0" }}</span>
+                                                                -
+                                                                <span data-goles-visitante>{{ partido.resultado_visitante|default_if_none:"0" }}</span>
+                                                            </p>
+
+                                                            <div class="flex-1 text-center">
+                                                                <p class="text-sm font-bold text-gray-800">
+                                                                    {{ partido.equipo_visitante.nombre }}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="text-sm font-semibold mt-4
+                                                        {% if partido.estado == 'finalizado' %}text-green-700
+                                                        {% elif partido.estado == 'en_juego' %}text-red-600
+                                                        {% elif partido.estado == 'descanso' %}text-yellow-700
+                                                        {% else %}text-gray-500{% endif %}"
+                                                       data-estado-descripcion="{{ partido.id_partido }}">
+
+                                                        {% if partido.estado == "finalizado" %}
+                                                            <i class="fa-solid fa-check-circle mr-1"></i>
+                                                            Este encuentro ya ha finalizado.
+                                                        {% elif partido.estado == "en_juego" %}
+                                                            <i class="fa-solid fa-circle animate-pulse mr-1"></i>
+                                                            El encuentro se encuentra en juego.
+                                                        {% elif partido.estado == "descanso" %}
+                                                            <i class="fa-solid fa-mug-hot mr-1"></i>
+                                                            El encuentro se encuentra en descanso.
+                                                        {% else %}
+                                                            <i class="fa-regular fa-clock mr-1"></i>
+                                                            El encuentro está programado.
+                                                        {% endif %}
+                                                    </p>
+                                                </div>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                        <!-- SANCIONES DEL PARTIDO -->
+                                        <div class="mt-6 bg-white border border-gray-200 rounded-xl p-5">
+
+                                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+                                                <div>
+                                                    <h4 class="font-bold text-gray-900">
+                                                        <i class="fa-solid fa-triangle-exclamation text-red-600 mr-2"></i>
+                                                        Sanciones del partido
+                                                    </h4>
+                                                    <p class="text-xs text-gray-500 mt-1">
+                                                        Registro de tarjetas recibidas por los jugadores de ambos equipos.
+                                                    </p>
+                                                </div>
+
+                                                <span class="text-xs font-bold text-gray-500 bg-gray-100 rounded-full px-3 py-2">
+                                                    <i class="fa-solid fa-clipboard-list mr-1"></i>
+                                                    Disciplina
+                                                </span>
+                                            </div>
+
+                                            {% if partido.sanciones_partido %}
+
+                                                <div class="overflow-x-auto">
+                                                    <table class="w-full min-w-[550px] text-left text-sm">
+                                                        <thead class="bg-gray-50 text-xs uppercase tracking-wide text-gray-500">
+                                                            <tr>
+                                                                <th class="px-4 py-3 font-semibold">Jugador</th>
+                                                                <th class="px-4 py-3 font-semibold">Equipo</th>
+                                                                <th class="px-4 py-3 font-semibold text-center">Amarillas</th>
+                                                                <th class="px-4 py-3 font-semibold text-center">Rojas</th>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <tbody class="divide-y divide-gray-100">
+                                                            {% for sancion in partido.sanciones_partido %}
+                                                                <tr class="hover:bg-gray-50">
+                                                                    <td class="px-4 py-3">
+                                                                        <div class="flex items-center gap-2">
+                                                                            <div class="w-8 h-8 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center">
+                                                                                <i class="fa-solid fa-user"></i>
+                                                                            </div>
+
+                                                                            <span class="font-semibold text-gray-800">
+                                                                                {{ sancion.id_jugador.nombre }}
+                                                                                {{ sancion.id_jugador.apellido }}
+                                                                            </span>
+                                                                        </div>
+                                                                    </td>
+
+                                                                    <td class="px-4 py-3 text-gray-600">
+                                                                        {{ sancion.id_jugador.id_equipo.nombre }}
+                                                                    </td>
+
+                                                                    <td class="px-4 py-3 text-center">
+                                                                        {% if sancion.tarjetas_amarillas > 0 %}
+                                                                            <span class="inline-flex items-center gap-2 rounded-lg bg-yellow-50 px-3 py-2 font-bold text-yellow-700">
+                                                                                <span class="card-yellow"></span>
+                                                                                {{ sancion.tarjetas_amarillas }}
+                                                                            </span>
+                                                                        {% else %}
+                                                                            <span class="text-gray-400">0</span>
+                                                                        {% endif %}
+                                                                    </td>
+
+                                                                    <td class="px-4 py-3 text-center">
+                                                                        {% if sancion.tarjetas_rojas > 0 %}
+                                                                            <span class="inline-flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2 font-bold text-red-700">
+                                                                                <span class="card-red"></span>
+                                                                                {{ sancion.tarjetas_rojas }}
+                                                                            </span>
+                                                                        {% else %}
+                                                                            <span class="text-gray-400">0</span>
+                                                                        {% endif %}
+                                                                    </td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                            {% else %}
+
+                                                <div class="text-center py-7">
+                                                    <div class="w-12 h-12 mx-auto rounded-full bg-gray-100 text-gray-400 flex items-center justify-center text-xl">
+                                                        <i class="fa-solid fa-shield-heart"></i>
+                                                    </div>
+
+                                                    <p class="text-sm font-semibold text-gray-700 mt-3">
+                                                        Sin sanciones registradas
+                                                    </p>
+
+                                                    <p class="text-xs text-gray-500 mt-1">
+                                                        Este partido todavía no tiene tarjetas registradas.
+                                                    </p>
+                                                </div>
+
+                                            {% endif %}
+                                        </div>
+                                        <!-- FIN SANCIONES -->
+
+                                    </td>
+                                </tr>
+
                             {% empty %}
+
                                 <tr id="filaVacia">
-                                    <td colspan="8" class="px-5 py-14 text-center">
+                                    <td colspan="{% if user.is_staff %}9{% else %}8{% endif %}"
+                                        class="px-5 py-14 text-center">
+
                                         <div class="text-4xl text-gray-300">
                                             <i class="fa-solid fa-calendar-xmark"></i>
                                         </div>
@@ -613,18 +1362,18 @@
                                         </p>
 
                                         <p class="mt-2 text-sm text-gray-500">
-                                            Registra tu primer encuentro para comenzar a administrar el fixture.
+                                            Todavía no existen encuentros disponibles para mostrar.
                                         </p>
 
-                                        {% if user.is_authenticated %}
-                                            <a href="{% url 'crear_partido' %}"
-                                               class="primary-btn mt-5">
+                                        {% if user.is_staff %}
+                                            <a href="{% url 'crear_partido' %}" class="primary-btn mt-5">
                                                 <i class="fa-solid fa-plus"></i>
                                                 Registrar partido
                                             </a>
                                         {% endif %}
                                     </td>
                                 </tr>
+
                             {% endfor %}
                         </tbody>
                     </table>
@@ -654,6 +1403,7 @@
                     <p>
                         © {% now "Y" %} CHAMPMANAGER · Ligas Deportivas del Maule
                     </p>
+
                     <p>
                         Plataforma desarrollada con Django y AWS RDS MySQL.
                     </p>
@@ -664,16 +1414,37 @@
     </main>
 </div>
 
+<!-- AVISO DE ACTUALIZACIÓN EN TIEMPO REAL -->
+<div id="avisoTiempoReal"
+     class="fixed bottom-5 right-5 z-50 hidden max-w-sm rounded-xl bg-gray-900 px-5 py-4 text-white shadow-2xl">
+
+    <div class="flex items-start gap-3">
+        <div class="text-red-400 text-xl">
+            <i class="fa-solid fa-bell"></i>
+        </div>
+
+        <div>
+            <p class="font-bold">Actualización del partido</p>
+            <p id="mensajeTiempoReal" class="text-sm text-gray-300 mt-1"></p>
+        </div>
+    </div>
+</div>
+
 <!-- BUSCADOR DE PARTIDOS -->
 <script>
+(function () {
+    "use strict";
+
     const buscador = document.getElementById("buscador");
     const tabla = document.getElementById("tablaPartidos");
     const sinResultados = document.getElementById("sinResultados");
     const contador = document.getElementById("contadorResultados");
 
+    if (!buscador || !tabla) return;
+
     const filas = Array.from(
-        tabla.querySelectorAll("tbody tr")
-    ).filter(fila => fila.id !== "filaVacia");
+        tabla.querySelectorAll("tbody tr.match-row")
+    );
 
     const filaVacia = document.getElementById("filaVacia");
 
@@ -681,13 +1452,17 @@
         const texto = buscador.value.toLowerCase().trim();
         let encontrados = 0;
 
-        filas.forEach(fila => {
+        filas.forEach((fila) => {
+            const filaDetalle = fila.nextElementSibling;
             const coincide = fila.innerText.toLowerCase().includes(texto);
+
             fila.hidden = !coincide;
 
-            if (coincide) {
-                encontrados++;
+            if (filaDetalle && filaDetalle.classList.contains("detalle-partido")) {
+                filaDetalle.hidden = !coincide;
             }
+
+            if (coincide) encontrados++;
         });
 
         if (filaVacia) {
@@ -703,10 +1478,390 @@
             : `Partidos registrados: ${filas.length}`;
     }
 
-    if (buscador) {
-        buscador.addEventListener("input", actualizarTabla);
-        actualizarTabla();
+    buscador.addEventListener("input", actualizarTabla);
+    actualizarTabla();
+})();
+</script>
+
+<!-- WEBSOCKETS Y ACTUALIZACIONES EN TIEMPO REAL -->
+<script>
+(function () {
+    "use strict";
+
+    const conexiones = new Map();
+
+    const aviso = document.getElementById("avisoTiempoReal");
+    const mensajeAviso = document.getElementById("mensajeTiempoReal");
+
+    let temporizadorAviso = null;
+
+    const protocolo = window.location.protocol === "https:" ? "wss:" : "ws:";
+
+    function mostrarAviso(mensaje) {
+        if (!aviso || !mensajeAviso) return;
+
+        mensajeAviso.textContent = mensaje;
+        aviso.classList.remove("hidden");
+
+        clearTimeout(temporizadorAviso);
+
+        temporizadorAviso = setTimeout(() => {
+            aviso.classList.add("hidden");
+        }, 5000);
     }
+
+    function obtenerTextoEstado(estado) {
+        const estados = {
+            programado: {
+                texto: "Programado",
+                clase: "status-programado",
+                icono: "fa-regular fa-clock"
+            },
+            en_juego: {
+                texto: "EN VIVO",
+                clase: "status-en-juego",
+                icono: "fa-solid fa-circle animate-pulse"
+            },
+            descanso: {
+                texto: "Descanso",
+                clase: "status-descanso",
+                icono: "fa-solid fa-mug-hot"
+            },
+            finalizado: {
+                texto: "Finalizado",
+                clase: "status-finalizado",
+                icono: "fa-solid fa-check-circle"
+            }
+        };
+
+        return estados[estado] || estados.programado;
+    }
+
+    function actualizarMarcador(partidoId, datos) {
+        const selectores = [
+            `[data-marcador-partido="${partidoId}"]`,
+            `[data-marcador-detalle="${partidoId}"]`
+        ];
+
+        selectores.forEach(selector => {
+            document.querySelectorAll(selector).forEach(marcador => {
+                const local = marcador.querySelector("[data-goles-local]");
+                const visitante = marcador.querySelector("[data-goles-visitante]");
+
+                if (local) {
+                    local.textContent = datos.resultado_local ?? 0;
+                }
+
+                if (visitante) {
+                    visitante.textContent = datos.resultado_visitante ?? 0;
+                }
+            });
+        });
+    }
+
+    function actualizarEstado(partidoId, estado) {
+        const elemento = document.querySelector(
+            `[data-estado-partido="${partidoId}"]`
+        );
+
+        if (elemento) {
+            const info = obtenerTextoEstado(estado);
+
+            elemento.className = "status " + info.clase;
+
+            const icono = document.createElement("i");
+            icono.className = info.icono;
+
+            elemento.replaceChildren(
+                icono,
+                document.createTextNode(" " + info.texto)
+            );
+        }
+
+        const descripcion = document.querySelector(
+            `[data-estado-descripcion="${partidoId}"]`
+        );
+
+        if (descripcion) {
+            const mensajes = {
+                programado: {
+                    texto: "El encuentro está programado.",
+                    clase: "text-gray-500",
+                    icono: "fa-regular fa-clock"
+                },
+                en_juego: {
+                    texto: "El encuentro se encuentra en juego.",
+                    clase: "text-red-600",
+                    icono: "fa-solid fa-circle animate-pulse"
+                },
+                descanso: {
+                    texto: "El encuentro se encuentra en descanso.",
+                    clase: "text-yellow-700",
+                    icono: "fa-solid fa-mug-hot"
+                },
+                finalizado: {
+                    texto: "Este encuentro ya ha finalizado.",
+                    clase: "text-green-700",
+                    icono: "fa-solid fa-check-circle"
+                }
+            };
+
+            const info = mensajes[estado] || mensajes.programado;
+
+            descripcion.className = "text-sm font-semibold mt-4 " + info.clase;
+
+            const icono = document.createElement("i");
+            icono.className = info.icono + " mr-1";
+
+            descripcion.replaceChildren(
+                icono,
+                document.createTextNode(info.texto)
+            );
+        }
+    }
+
+    function obtenerTipoEvento(tipo, mensaje) {
+        const tipos = {
+            gol_local: {
+                titulo: "Gol del equipo local",
+                icono: "fa-solid fa-futbol text-green-600",
+                clase: "event-gol"
+            },
+            gol_visitante: {
+                titulo: "Gol del equipo visitante",
+                icono: "fa-solid fa-futbol text-blue-600",
+                clase: "event-gol"
+            },
+            tarjeta_amarilla: {
+                titulo: "Tarjeta amarilla",
+                icono: "fa-solid fa-square text-yellow-400",
+                clase: "event-amarilla"
+            },
+            tarjeta_roja: {
+                titulo: "Tarjeta roja",
+                icono: "fa-solid fa-square text-red-600",
+                clase: "event-roja"
+            },
+            fin_primer_tiempo: {
+                titulo: "Final del primer tiempo",
+                icono: "fa-solid fa-hourglass-half text-yellow-600",
+                clase: ""
+            },
+            iniciar_segundo_tiempo: {
+                titulo: "Inicio del segundo tiempo",
+                icono: "fa-solid fa-play text-green-600",
+                clase: ""
+            },
+            iniciar_alargue_primer_tiempo: {
+                titulo: "Inicio del primer tiempo del alargue",
+                icono: "fa-solid fa-stopwatch text-yellow-600",
+                clase: ""
+            },
+            fin_alargue_primer_tiempo: {
+                titulo: "Final del primer tiempo del alargue",
+                icono: "fa-solid fa-hourglass-half text-yellow-600",
+                clase: ""
+            },
+            iniciar_alargue_segundo_tiempo: {
+                titulo: "Inicio del segundo tiempo del alargue",
+                icono: "fa-solid fa-play text-green-600",
+                clase: ""
+            },
+            iniciar: {
+                titulo: "Partido iniciado",
+                icono: "fa-solid fa-play text-green-600",
+                clase: ""
+            },
+            partido_finalizado: {
+                titulo: "Partido finalizado",
+                icono: "fa-solid fa-flag-checkered text-green-600",
+                clase: ""
+            }
+        };
+
+        return tipos[tipo] || {
+            titulo: mensaje || "Actualización del partido",
+            icono: "fa-solid fa-bell text-gray-600",
+            clase: ""
+        };
+    }
+
+    function agregarEvento(partidoId, datos) {
+        const lista = document.querySelector(
+            `[data-lista-eventos="${partidoId}"]`
+        );
+
+        if (!lista) return;
+
+        const mensaje = datos.mensaje || "Actualización del partido";
+        const info = obtenerTipoEvento(datos.tipo, mensaje);
+
+        const placeholder = lista.querySelector("[data-sin-eventos]");
+
+        if (placeholder) {
+            placeholder.remove();
+        }
+
+        const evento = document.createElement("div");
+        evento.className = "event-item " + info.clase;
+
+        const cabecera = document.createElement("div");
+        cabecera.className = "flex flex-wrap items-center justify-between gap-2";
+
+        const titulo = document.createElement("p");
+        titulo.className = "text-sm font-semibold text-gray-800";
+
+        const icono = document.createElement("i");
+        icono.className = info.icono + " mr-1";
+
+        titulo.appendChild(icono);
+        titulo.appendChild(document.createTextNode(info.titulo));
+
+        cabecera.appendChild(titulo);
+
+        if (datos.minuto !== null && datos.minuto !== undefined) {
+            const minuto = document.createElement("span");
+            minuto.className = "text-xs font-bold text-gray-500";
+            minuto.textContent = datos.minuto + "'";
+            cabecera.appendChild(minuto);
+        }
+
+        evento.appendChild(cabecera);
+
+        if (datos.jugador) {
+            const jugador = document.createElement("p");
+            jugador.className = "text-xs font-semibold text-gray-700 mt-1";
+            jugador.textContent = "Goleador: " + datos.jugador;
+            evento.appendChild(jugador);
+        }
+
+        if (datos.asistente) {
+            const asistente = document.createElement("p");
+            asistente.className = "text-xs font-semibold text-green-700 mt-1";
+            asistente.textContent = "Asistencia: " + datos.asistente;
+            evento.appendChild(asistente);
+        }
+
+        const descripcion = document.createElement("p");
+        descripcion.className = "text-xs text-gray-500 mt-1";
+        descripcion.textContent = mensaje;
+        evento.appendChild(descripcion);
+
+        const fecha = document.createElement("p");
+        fecha.className = "text-xs text-gray-400 mt-1";
+        fecha.textContent = new Date().toLocaleString("es-CL");
+        evento.appendChild(fecha);
+
+        lista.prepend(evento);
+    }
+
+    function procesarActualizacion(datos) {
+        if (!datos || !datos.partido_id) return;
+
+        const partidoId = datos.partido_id;
+
+        actualizarMarcador(partidoId, datos);
+
+        if (datos.estado) {
+            actualizarEstado(partidoId, datos.estado);
+        }
+
+        agregarEvento(partidoId, datos);
+
+        mostrarAviso(
+            datos.mensaje || "El partido ha sido actualizado."
+        );
+    }
+
+    function conectarPartido(partidoId) {
+        if (conexiones.has(partidoId)) {
+            const conexionActual = conexiones.get(partidoId);
+
+            if (
+                conexionActual.readyState === WebSocket.OPEN ||
+                conexionActual.readyState === WebSocket.CONNECTING
+            ) {
+                return;
+            }
+        }
+
+        const url = `${protocolo}//${window.location.host}/ws/partidos/${partidoId}/`;
+        const socket = new WebSocket(url);
+
+        conexiones.set(partidoId, socket);
+
+        socket.onopen = function () {
+            console.log(`WebSocket conectado al partido ${partidoId}`);
+        };
+
+        socket.onmessage = function (event) {
+            try {
+                const respuesta = JSON.parse(event.data);
+
+                if (respuesta.tipo === "conexion") {
+                    console.log(respuesta.mensaje);
+                    return;
+                }
+
+                const datos = respuesta.data || respuesta;
+                procesarActualizacion(datos);
+
+            } catch (error) {
+                console.error(
+                    "Error al procesar mensaje WebSocket:",
+                    error
+                );
+            }
+        };
+
+        socket.onerror = function (error) {
+            console.error(
+                `Error WebSocket en partido ${partidoId}:`,
+                error
+            );
+        };
+
+        socket.onclose = function (event) {
+            console.log(
+                `WebSocket cerrado para partido ${partidoId}. Código:`,
+                event.code
+            );
+
+            conexiones.delete(partidoId);
+
+            if (!document.hidden) {
+                setTimeout(() => {
+                    if (!document.hidden) {
+                        conectarPartido(partidoId);
+                    }
+                }, 3000);
+            }
+        };
+    }
+
+    function iniciarConexiones() {
+        const filasPartidos = document.querySelectorAll(
+            "tr.match-row[data-partido-id]"
+        );
+
+        filasPartidos.forEach(fila => {
+            const partidoId = fila.dataset.partidoId;
+
+            if (partidoId) {
+                conectarPartido(partidoId);
+            }
+        });
+    }
+
+    document.addEventListener("visibilitychange", function () {
+        if (!document.hidden) {
+            iniciarConexiones();
+        }
+    });
+
+    iniciarConexiones();
+
+})();
 </script>
 
 </body>
